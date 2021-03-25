@@ -2,12 +2,13 @@
 
 const fs = require(`fs`);
 const {getRandomInt, shuffle, createRandomDate} = require(`../utils`);
-const {MAX_COUNT, TITLES, ANONSES, CATEGORIES, DEFAULT_COUNT, FILE_NAME} = require(`../const`);
+const {MAX_COUNT, TITLES, ANONSES, CATEGORIES, DEFAULT_COUNT, FILE_NAME, ExitCode} = require(`../const`);
 
 
 const generatePosts = (count) => {
   if (count > MAX_COUNT) {
-    return console.info(`Не больше ${MAX_COUNT} публикаций.`);
+    console.info(`Не больше ${MAX_COUNT} публикаций.`);
+    process.exit(ExitCode.ERROR);
   }
 
   const posts = [];
@@ -30,7 +31,7 @@ module.exports = {
   name: `--generate`,
   run(args) {
     const [count] = args;
-    const countOffer = count > 0 ? Number.parseInt(count, 10) || DEFAULT_COUNT : DEFAULT_COUNT;
+    const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
     const content = JSON.stringify(generatePosts(countOffer));
 
     fs.writeFile(FILE_NAME, content, (err) => {

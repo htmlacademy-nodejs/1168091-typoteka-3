@@ -59,7 +59,8 @@ const DEFAULT_COMMAND = `--help`;
 const USER_ARGV_INDEX = 2;
 
 const ExitCode = {
-  success: 0
+  SUCCESS: 0,
+  ERROR: 1
 };
 
 
