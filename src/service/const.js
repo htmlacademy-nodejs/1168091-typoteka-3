@@ -4,6 +4,16 @@ const DEFAULT_COUNT = 1;
 const MAX_COUNT = 1000;
 const FILE_NAME = `mocks.json`;
 
+const HELP_MESSAGE =
+  `Программа запускает http-сервер и формирует файл с данными для API.
+
+    Гайд:
+      service.js <command>
+      Команды:
+      --version:            выводит номер версии
+      --help:               печатает этот текст
+      --generate <count>    формирует файл mocks.json`;
+
 const TITLES = [
   `Ёлки. История деревьев`,
   `Как перестать беспокоиться и начать жить`,
@@ -73,5 +83,6 @@ module.exports = {
   CATEGORIES,
   DEFAULT_COMMAND,
   USER_ARGV_INDEX,
+  HELP_MESSAGE,
   ExitCode
 };
