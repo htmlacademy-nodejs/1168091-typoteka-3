@@ -1,6 +1,7 @@
 'use strict';
 
 const DEFAULT_COUNT = 1;
+const DEFAULT_PORT = 3000;
 const MAX_COUNT = 1000;
 const FILE_NAME = `mocks.json`;
 const FILE_SENTENCES_PATH = `./data/sentences.txt`;
@@ -26,9 +27,18 @@ const ExitCode = {
   ERROR: 1
 };
 
+const HttpCode = {
+  OK: 200,
+  NOT_FOUND: 404,
+  INTERNAL_SERVER_ERROR: 500,
+  FORBIDDEN: 403,
+  UNAUTHORIZED: 401,
+};
+
 
 module.exports = {
   DEFAULT_COUNT,
+  DEFAULT_PORT,
   MAX_COUNT,
   FILE_NAME,
   FILE_SENTENCES_PATH,
@@ -37,5 +47,6 @@ module.exports = {
   DEFAULT_COMMAND,
   USER_ARGV_INDEX,
   HELP_MESSAGE,
-  ExitCode
+  ExitCode,
+  HttpCode
 };
