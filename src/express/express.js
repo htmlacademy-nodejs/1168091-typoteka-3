@@ -1,17 +1,18 @@
 'use strict';
 
-const DEFAULT_PORT = 8080;
-
 const express = require(`express`);
-const mainRoutes = require(`./routes/main-routes`);
-const myRoutes = require(`./routes/my-routes`);
-const articlesRoutes = require(`./routes/articles-routes`);
+const router = require(`./routes/router`);
+
+
+const DEFAULT_PORT = 8080;
 
 const app = express();
 
-app.use(`/`, mainRoutes);
-app.use(`/my`, myRoutes);
-app.use(`/articles`, articlesRoutes);
+app.use(router);
 
+app.use(function (err, req, res) {
+  console.error(err.stack);
+  res.status(500).send(`Something broke!`);
+});
 
 app.listen(DEFAULT_PORT);
