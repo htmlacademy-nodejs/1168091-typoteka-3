@@ -16,7 +16,8 @@ const HELP_MESSAGE =
       Команды:
       --version:            выводит номер версии
       --help:               печатает этот текст
-      --generate <count>    формирует файл mocks.json`;
+      --generate <count>    формирует файл mocks.json
+      --server <port> запускает http-сервер на порту c номером <port>`;
 
 const DEFAULT_COMMAND = `--help`;
 
