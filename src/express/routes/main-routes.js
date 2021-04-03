@@ -2,12 +2,12 @@
 
 const {Router} = require(`express`);
 
-const mainRouter = new Router();
+const router = new Router();
 
-mainRouter.get(`/`, (req, res) => res.send(`/`));
-mainRouter.get(`/register`, (req, res) => res.send(`/register`));
-mainRouter.get(`/login`, (req, res) => res.send(`/login`));
-mainRouter.get(`/search`, (req, res) => res.send(`/search`));
-mainRouter.get(`/categories`, (req, res) => res.send(`/categories`));
+router.get(`/`, (req, res) => res.render(`main`));
+router.get(`/register`, (req, res) => res.render(`registration`));
+router.get(`/login`, (req, res) => res.render(`login`));
+router.get(`/search`, (req, res) => res.render(`search`));
+router.get(`/categories`, (req, res) => res.render(`categories`));
 
-module.exports = mainRouter;
+module.exports = router;
