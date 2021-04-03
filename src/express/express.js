@@ -16,9 +16,9 @@ app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
 app.set(`views`, path.resolve(__dirname, `templates`));
 app.set(`view engine`, `pug`);
 
-app.use(function (err, req, res) {
+app.use(function (err, req, res, __next) {
   console.error(err.stack);
   res.status(500).send(`Something broke!`);
 });
 
-app.listen(DEFAULT_PORT);
+app.listen(DEFAULT_PORT, () => console.log(`The server is running on port: ${DEFAULT_PORT}`));
