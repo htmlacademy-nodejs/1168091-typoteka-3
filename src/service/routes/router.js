@@ -3,6 +3,7 @@
 const {Router} = require(`express`);
 const fs = require(`fs`).promises;
 const {FILE_NAME, HttpCode} = require(`../const`);
+const chalk = require(`chalk`);
 
 const router = new Router();
 
@@ -12,7 +13,9 @@ router.get(`/posts`, async (req, res) => {
     const mocks = JSON.parse(fileContent);
     res.json(mocks);
   } catch (err) {
-    res.status(HttpCode.INTERNAL_SERVER_ERROR).send(err);
+    res.json([]);
+    res.status(HttpCode.INTERNAL_SERVER_ERROR);
+    console.log(chalk.red(err));
   }
 });
 
