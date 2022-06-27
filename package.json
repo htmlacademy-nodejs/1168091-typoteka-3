@@ -4,7 +4,7 @@
   "description": "\"Типотека\"",
   "main": "./src/service/service.js",
   "scripts": {
-    "start.dev": "nodemon ./src/service/servise.js --server",
+    "start.dev": "nodemon ./src/service/service.js --server",
     "start-front-server": "nodemon ./src/express/express.js",
     "start": "node ./src/service/service.js",
     "test": "npm run eslint",
