@@ -1,15 +1,13 @@
-'use strict';
-
-const {Router} = require(`express`);
-const fs = require(`fs`).promises;
-const {FILE_NAME, HttpCode} = require(`../const`);
-const chalk = require(`chalk`);
+import { Router } from "express";
+import fs from "fs/promises";
+import { FILE_NAME, HttpCode } from "../const.js";
+import chalk from "chalk";
 
 const router = new Router();
 
 router.get(`/posts`, async (req, res) => {
   try {
-    const fileContent = await fs.readFile(FILE_NAME);
+    const fileContent = await fs.readFile(FILE_NAME, `utf8`);
     const mocks = JSON.parse(fileContent);
     res.json(mocks);
   } catch (err) {
@@ -19,4 +17,4 @@ router.get(`/posts`, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,11 +1,12 @@
-'use strict';
+import chalk from "chalk";
+import fs from "fs/promises";
+import { PACKAGE_JSON_PATH } from "../const.js";
 
-const chalk = require(`chalk`);
-const packageJsonFile = require(`../../../package.json`);
-
-module.exports = {
+export default {
   name: `--version`,
-  run() {
-    console.info(chalk.blue(packageJsonFile.version));
-  }
+  async run() {
+    const content = await fs.readFile(PACKAGE_JSON_PATH);
+    const { version } = JSON.parse(content);
+    console.info(chalk.blue(version));
+  },
 };

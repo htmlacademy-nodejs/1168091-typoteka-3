@@ -1,11 +1,9 @@
-'use strict';
+import chalk from "chalk";
+import { HELP_MESSAGE } from "../const.js";
 
-const chalk = require(`chalk`);
-const {HELP_MESSAGE} = require(`../const`);
-
-module.exports = {
+export default {
   name: `--help`,
   run() {
     console.info(chalk.gray(HELP_MESSAGE));
-  }
+  },
 };

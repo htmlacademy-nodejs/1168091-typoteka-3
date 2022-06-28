@@ -1,17 +1,18 @@
-'use strict';
-
-const chalk = require(`chalk`);
-const fs = require(`fs`).promises;
-const {getRandomInt, shuffle, createRandomDate} = require(`../utils`);
-const {
+import { nanoid } from "nanoid";
+import chalk from "chalk";
+import fs from "fs/promises";
+import { getRandomInt, shuffle, createRandomDate } from "../utils.js";
+import {
   MAX_COUNT,
   DEFAULT_COUNT,
   FILE_NAME,
   ExitCode,
   FILE_SENTENCES_PATH,
   FILE_TITLES_PATH,
-  FILE_CATEGORIES_PATH
-} = require(`../const`);
+  FILE_CATEGORIES_PATH,
+  FILE_COMMENTS_PATH,
+  MAX_COMMENTS_IN_POST,
+} from "../const.js";
 
 const readContent = async (filePath) => {
   try {
@@ -23,8 +24,7 @@ const readContent = async (filePath) => {
   }
 };
 
-const generatePosts = (count, titles, categories, sentences) => {
-
+const generatePosts = (count, titles, categories, sentences, comments) => {
   if (count > MAX_COUNT) {
     console.log(chalk.red(`Не больше ${MAX_COUNT} публикаций.`));
     process.exit(ExitCode.ERROR);
@@ -34,32 +34,39 @@ const generatePosts = (count, titles, categories, sentences) => {
 
   for (let i = 0; i < count; i++) {
     posts.push({
-      id: `post-${i}`,
+      id: nanoid(),
       title: titles[getRandomInt(0, titles.length - 1)],
       createdDate: createRandomDate(),
       announce: sentences[getRandomInt(0, sentences.length - 1)],
       fullText: shuffle(sentences).slice(1, 5).join(` `),
-      category: categories[getRandomInt(0, categories.length - 1)]
+      category: categories[getRandomInt(0, categories.length - 1)],
+      comments: new Array(getRandomInt(0, MAX_COMMENTS_IN_POST))
+        .fill({})
+        .map(() => ({
+          id: nanoid(),
+          text: comments[getRandomInt(0, comments.length - 1)],
+        })),
     });
   }
 
   return posts;
 };
 
-module.exports = {
+export default {
   name: `--generate`,
   async run(args) {
-
-    const [titles, categories, sentences] = await Promise.all(
-        [
-          readContent(FILE_TITLES_PATH),
-          readContent(FILE_CATEGORIES_PATH),
-          readContent(FILE_SENTENCES_PATH)
-        ]);
+    const [titles, categories, sentences, comments] = await Promise.all([
+      readContent(FILE_TITLES_PATH),
+      readContent(FILE_CATEGORIES_PATH),
+      readContent(FILE_SENTENCES_PATH),
+      readContent(FILE_COMMENTS_PATH),
+    ]);
 
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
-    const content = JSON.stringify(generatePosts(countOffer, titles, categories, sentences));
+    const content = JSON.stringify(
+      generatePosts(countOffer, titles, categories, sentences, comments)
+    );
 
     try {
       await fs.writeFile(FILE_NAME, content);
@@ -67,5 +74,5 @@ module.exports = {
     } catch (err) {
       console.log(chalk.red(`Can't write data to file...`));
     }
-  }
+  },
 };

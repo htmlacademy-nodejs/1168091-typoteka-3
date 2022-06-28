@@ -1,17 +1,13 @@
-'use strict';
-
-const generate = require(`./generate`);
-const help = require(`./help`);
-const version = require(`./version`);
-const server = require(`./server`);
+import generate from "./generate.js";
+import help from "./help.js";
+import version from "./version.js";
+import server from "./server.js";
 
 const Cli = {
   [generate.name]: generate,
   [help.name]: help,
   [version.name]: version,
-  [server.name]: server
+  [server.name]: server,
 };
 
-module.exports = {
-  Cli,
-};
+export default Cli;

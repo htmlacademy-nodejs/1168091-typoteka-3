@@ -1,12 +1,6 @@
-'use strict';
+import Cli from "./cli/index.js";
 
-const {Cli} = require(`./cli`);
-
-const {
-  DEFAULT_COMMAND,
-  USER_ARGV_INDEX,
-  ExitCode
-} = require(`./const`);
+import { DEFAULT_COMMAND, USER_ARGV_INDEX, ExitCode } from "./const.js";
 
 const userArguments = process.argv.slice(USER_ARGV_INDEX);
 const [userCommand] = userArguments;
