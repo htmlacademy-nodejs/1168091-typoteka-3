@@ -1,6 +1,4 @@
-'use strict';
-
-const {Router} = require(`express`);
+import {Router} from 'express';
 
 const router = new Router();
 
@@ -10,4 +8,4 @@ router.get(`/login`, (req, res) => res.render(`login`));
 router.get(`/search`, (req, res) => res.render(`search`));
 router.get(`/categories`, (req, res) => res.render(`categories`));
 
-module.exports = router;
+export default router;

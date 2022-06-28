@@ -1,7 +1,7 @@
-import { nanoid } from "nanoid";
+import {nanoid} from "nanoid";
 import chalk from "chalk";
 import fs from "fs/promises";
-import { getRandomInt, shuffle, createRandomDate } from "../utils.js";
+import {getRandomInt, shuffle, createRandomDate} from "../utils.js";
 import {
   MAX_COUNT,
   DEFAULT_COUNT,
@@ -65,7 +65,7 @@ export default {
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
     const content = JSON.stringify(
-      generatePosts(countOffer, titles, categories, sentences, comments)
+        generatePosts(countOffer, titles, categories, sentences, comments)
     );
 
     try {

@@ -1,9 +1,7 @@
-'use strict';
-
-const {Router} = require(`express`);
-const mainRoutes = require(`./main-routes`);
-const myRoutes = require(`./my-routes`);
-const articlesRoutes = require(`./articles-routes`);
+import {Router} from 'express';
+import mainRoutes from './main-routes.js';
+import myRoutes from './my-routes.js';
+import articlesRoutes from './articles-routes.js';
 
 const router = new Router();
 
@@ -11,4 +9,4 @@ router.use(`/`, mainRoutes);
 router.use(`/my`, myRoutes);
 router.use(`/articles`, articlesRoutes);
 
-module.exports = router;
+export default router;

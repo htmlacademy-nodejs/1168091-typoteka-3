@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { HELP_MESSAGE } from "../const.js";
+import {HELP_MESSAGE} from "../const.js";
 
 export default {
   name: `--help`,

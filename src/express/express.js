@@ -1,19 +1,20 @@
-'use strict';
-
-const express = require(`express`);
-const router = require(`./routes/router`);
-const path = require(`path`);
+import express from 'express';
+import router from './routes/router.js';
+import path from 'path';
 
 
 const DEFAULT_PORT = 8080;
-const PUBLIC_DIR = `public`;
+const PUBLIC_DIR = `src/express/public`;
+const __dirname = path.resolve();
+
+console.log(`__dirname`, __dirname);
 
 const app = express();
 
 app.use(router);
 app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
 
-app.set(`views`, path.resolve(__dirname, `templates`));
+app.set(`views`, path.resolve(__dirname, `src/express/templates`));
 app.set(`view engine`, `pug`);
 
 app.use(function (err, req, res, __next) {
