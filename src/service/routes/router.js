@@ -1,6 +1,6 @@
-import { Router } from "express";
+import {Router} from "express";
 import fs from "fs/promises";
-import { FILE_NAME, HttpCode } from "../const.js";
+import {FILE_NAME, HttpCode} from "../const.js";
 import chalk from "chalk";
 
 const router = new Router();
