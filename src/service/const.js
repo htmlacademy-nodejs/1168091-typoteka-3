@@ -8,6 +8,7 @@ const FILE_SENTENCES_PATH = `./data/sentences.txt`;
 const FILE_TITLES_PATH = `./data/titles.txt`;
 const FILE_CATEGORIES_PATH = `./data/categories.txt`;
 const FILE_COMMENTS_PATH = `./data/comments.txt`;
+const MAX_ID_LENGTH = 6;
 
 const HELP_MESSAGE = `Программа запускает http-сервер и формирует файл с данными для API.
 
@@ -30,6 +31,7 @@ const ExitCode = {
 
 const HttpCode = {
   OK: 200,
+  BAD_REQUEST: 400,
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
   FORBIDDEN: 403,
@@ -52,4 +54,5 @@ export {
   HttpCode,
   MAX_COMMENTS_IN_POST,
   PACKAGE_JSON_PATH,
+  MAX_ID_LENGTH
 };

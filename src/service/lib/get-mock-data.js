@@ -12,8 +12,7 @@ export const getMockData = async () => {
     data = JSON.parse(fileContent);
   } catch (err) {
     console.log(err);
-    return (err);
   }
 
-  return data;
+  return (data);
 };

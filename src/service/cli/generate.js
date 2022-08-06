@@ -12,6 +12,7 @@ import {
   FILE_CATEGORIES_PATH,
   FILE_COMMENTS_PATH,
   MAX_COMMENTS_IN_POST,
+  MAX_ID_LENGTH
 } from "../const.js";
 
 const readContent = async (filePath) => {
@@ -34,7 +35,7 @@ const generatePosts = (count, titles, categories, sentences, comments) => {
 
   for (let i = 0; i < count; i++) {
     posts.push({
-      id: nanoid(),
+      id: nanoid(MAX_ID_LENGTH),
       title: titles[getRandomInt(0, titles.length - 1)],
       createdDate: createRandomDate(),
       announce: sentences[getRandomInt(0, sentences.length - 1)],
@@ -43,7 +44,7 @@ const generatePosts = (count, titles, categories, sentences, comments) => {
       comments: new Array(getRandomInt(0, MAX_COMMENTS_IN_POST))
         .fill({})
         .map(() => ({
-          id: nanoid(),
+          id: nanoid(MAX_ID_LENGTH),
           text: comments[getRandomInt(0, comments.length - 1)],
         })),
     });

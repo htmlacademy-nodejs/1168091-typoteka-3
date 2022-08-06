@@ -1,11 +1,4 @@
-POST /posts HTTP/1.1
-Host: jsonplaceholder.typicode.com
+GET /search?query=lalala HTTP/1.1
+Host: localhost:3000
 Content-Type: application/json
-Content-Length: 88
-
-{
-    "title": "Новая публикация",
-    "body": "Текст публикации",
-    "userId": 31337
-}
 

@@ -16,23 +16,32 @@ const shuffle = (someArray) => {
   return someArray;
 };
 
-const addZero = (num) => {
-  return `${num}`.length === 1 ? `0${num}` : `${num}`;
-};
-
 const createRandomDate = () => {
   const maxDiff = Math.random() * 3 * 60 * 60 * 24 * 30 * 1000;
-
   const date = new Date(new Date().getTime() - maxDiff);
 
-  const year = date.getFullYear();
-  const month = addZero(date.getMonth() + 1);
-  const day = addZero(date.getDate());
-  const hours = addZero(date.getHours());
-  const minutes = addZero(date.getMinutes());
-  const seconds = addZero(date.getSeconds());
-
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  return date.toISOString();
 };
 
-export { getRandomInt, shuffle, createRandomDate };
+const getErrolList = (requireFields, gotFields) => {
+  const errolLisl = {};
+
+  const keys = Object.keys(gotFields);
+
+  requireFields.forEach((key) => {
+    if (!keys.includes(key)) {
+      errolLisl[key] = `required field`;
+    }
+  });
+
+  keys.forEach((key) => {
+    if (!requireFields.includes(key)) {
+      errolLisl[key] = `unknown field`;
+    }
+  });
+
+  return errolLisl;
+
+};
+
+export {getRandomInt, shuffle, createRandomDate, getErrolList};

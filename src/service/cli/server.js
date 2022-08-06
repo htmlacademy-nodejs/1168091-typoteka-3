@@ -1,5 +1,5 @@
 import {DEFAULT_PORT} from "../const.js";
-import router from "../routes/router.js";
+import router from "../api/index.js";
 import express from "express";
 import chalk from "chalk";
 
