@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {HttpCode} from "../const.js";
-import requiredFieldsValidation from "../middlewares/requiredFieldsValidation.js";
-import articleExist from "../middlewares/articleExist.js";
+import requiredFieldsValidation from "../middlewares/required-fields-validation.js";
+import articleExist from "../middlewares/article-exist.js";
 
 const REQUIRED_ARTICLE_FIELDS = [`title`, `announce`, `fullText`, `category`];
 const REQUIRED_COMMENT_FIELDS = [`text`];
