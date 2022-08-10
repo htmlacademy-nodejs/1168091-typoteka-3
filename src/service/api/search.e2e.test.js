@@ -1,5 +1,5 @@
-const express = require(`express`);
-const request = require(`supertest`);
+import express from "express";
+import request from "supertest";
 import search from "./search.js";
 import {SearchService} from "../data-service";
 import {HttpCode} from "../const.js";
