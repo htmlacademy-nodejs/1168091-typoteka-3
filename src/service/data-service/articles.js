@@ -10,6 +10,7 @@ export class ArticlesService {
     return this._articles;
   }
 
+
   findOne(id) {
     return this._articles.find((item) => item.id === id);
   }
@@ -22,14 +23,19 @@ export class ArticlesService {
     }, article);
 
     this._articles.push(newArticle);
+    console.log(`create`, this._articles.length);
     return newArticle;
   }
 
-  update(id, article) {
-    const oldArticle = this._articles
-      .find((item) => item.id === id);
-
-    return Object.assign(oldArticle, article);
+  update(oldArticle, article) {
+    const index = this._articles.findIndex((item) => item.id === oldArticle.id);
+    const changedArticle = Object.assign(oldArticle, article);
+    this._articles = [
+      ...this._articles.slice(0, index),
+      changedArticle,
+      ...this._articles.slice(index + 1)
+    ];
+    return changedArticle;
   }
 
   delete(id) {

@@ -1,15 +1,46 @@
-import {DEFAULT_PORT} from "../const.js";
+import {DEFAULT_PORT, HttpCode} from "../const.js";
 import router from "../api/index.js";
 import express from "express";
-import chalk from "chalk";
+import {getLogger} from "../lib/logger.js";
+
+const logger = getLogger({name: `api`});
 
 const startServer = (port) => {
   const app = express();
   app.use(express.json());
   app.use(router);
-  app.listen(port, () =>
-    console.log(chalk.green(`The api server is running on port: ${port}`))
-  );
+
+  // несуществующий маршрут
+  app.use((req, res) => {
+    res.status(HttpCode.NOT_FOUND).send(`Not found`);
+    logger.error(`Route not found: ${req.url}`);
+  });
+
+  // любые ошибки
+  app.use((err, _req, _res, _next) => {
+    logger.error(`An error occurred on processing request: ${err.message}`);
+  });
+
+  app.use((req, res, next) => {
+    logger.debug(`Request on route ${req.url}`);
+    res.on(`finish`, () => {
+      logger.info(`Response status code ${res.statusCode}`);
+    });
+    next();
+  });
+
+  try {
+    app.listen(port, (err) => {
+      if (err) {
+        return logger.error(`An error occurred on server creation: ${err.message}`);
+      }
+      return logger.info(`Listening to connections on ${port}`);
+    });
+
+  } catch (err) {
+    logger.error(`An error occurred: ${err.message}`);
+    process.exit(1);
+  }
 };
 
 export default {

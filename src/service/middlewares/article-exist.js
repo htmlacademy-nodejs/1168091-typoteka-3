@@ -5,10 +5,11 @@ export default (service) => (req, res, next) => {
   const article = service.findOne(articleId);
 
   if (!article) {
-    return res.status(HttpCode.NOT_FOUND)
+    res.status(HttpCode.NOT_FOUND)
       .send(`Article with ${articleId} not found`);
+    return;
   }
 
   res.locals.article = article;
-  return next();
+  next();
 };

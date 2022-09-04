@@ -5,12 +5,14 @@ export default (requiredFields) => (req, res, next) => {
 
   const newArticle = req.body;
 
-  const errolLisl = getErrolList(requiredFields, newArticle);
+  const errolList = getErrolList(requiredFields, newArticle);
 
-  if (Object.keys(errolLisl).length) {
+  if (Object.keys(errolList).length) {
     res.status(HttpCode.BAD_REQUEST)
-      .json(errolLisl);
+      .json(errolList);
+    return;
   }
 
   next();
+
 };

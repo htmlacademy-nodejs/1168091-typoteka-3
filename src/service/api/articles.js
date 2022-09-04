@@ -40,9 +40,10 @@ export default (app, articleService) => {
   });
 
   route.post(`/`, requiredFieldsValidation(REQUIRED_ARTICLE_FIELDS), (req, res) => {
+
     const article = articleService.create(req.body);
 
-    return res.status(HttpCode.OK)
+    return res.status(HttpCode.CREATED)
       .json(article);
   });
 
@@ -63,7 +64,7 @@ export default (app, articleService) => {
 
     articleService.delete(id);
 
-    return res.status(HttpCode.OK).send(`Article ${id} was deleted`);
+    return res.status(HttpCode.OK).json({id}).send(`Article ${id} was deleted`);
   });
 
   route.delete(`/:articleId/comments/:commentId`, articleExist(articleService), (req, res) => {
@@ -73,4 +74,16 @@ export default (app, articleService) => {
     return res.status(HttpCode.OK)
       .json(comments);
   });
+
+  route.put(`/:articleId`,
+      [articleExist(articleService), requiredFieldsValidation(REQUIRED_ARTICLE_FIELDS)],
+      (req, res) => {
+        const {article} = res.locals;
+        const newArticle = req.body;
+
+        const changedArticle = articleService.update(article, newArticle);
+
+        return res.status(HttpCode.OK).json(changedArticle);
+      }
+  );
 };
