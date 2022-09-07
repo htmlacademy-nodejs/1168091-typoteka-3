@@ -11,13 +11,13 @@ import search from "./search.js";
 
 import {getMockData} from "../lib/get-mock-data.js";
 
-const app = new Router();
+const router = new Router();
 
 (async () => {
   const data = await getMockData();
-  articles(app, new ArticlesService(data));
-  category(app, new CategoryService(data));
-  search(app, new SearchService(data));
+  articles(router, new ArticlesService(data));
+  category(router, new CategoryService(data));
+  search(router, new SearchService(data));
 })();
 
-export default app;
+export default router;

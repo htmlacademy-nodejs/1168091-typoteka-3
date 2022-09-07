@@ -1,5 +1,5 @@
 import {DEFAULT_PORT, HttpCode} from "../const.js";
-import router from "../api/index.js";
+import myRouters from "../api/index.js";
 import express from "express";
 import {getLogger} from "../lib/logger.js";
 
@@ -7,19 +7,9 @@ const logger = getLogger({name: `api`});
 
 const startServer = (port) => {
   const app = express();
+
   app.use(express.json());
-  app.use(router);
-
-  // несуществующий маршрут
-  app.use((req, res) => {
-    res.status(HttpCode.NOT_FOUND).send(`Not found`);
-    logger.error(`Route not found: ${req.url}`);
-  });
-
-  // любые ошибки
-  app.use((err, _req, _res, _next) => {
-    logger.error(`An error occurred on processing request: ${err.message}`);
-  });
+  app.use(`/api/`, myRouters);
 
   app.use((req, res, next) => {
     logger.debug(`Request on route ${req.url}`);
@@ -29,11 +19,21 @@ const startServer = (port) => {
     next();
   });
 
+  // несуществующий маршрут
+  app.use((req, res, next) => {
+    res.status(HttpCode.NOT_FOUND).send(`Not found`);
+    logger.error(`Route not found: ${req.url}`);
+    next();
+  });
+
+  // любые ошибки
+  app.use((err, _req, _res, _next) => {
+    logger.error(`An error occurred on processing request: ${err.message}`);
+  });
+
+
   try {
-    app.listen(port, (err) => {
-      if (err) {
-        return logger.error(`An error occurred on server creation: ${err.message}`);
-      }
+    app.listen(port, () => {
       return logger.info(`Listening to connections on ${port}`);
     });
 
