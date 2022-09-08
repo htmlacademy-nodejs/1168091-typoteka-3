@@ -8,7 +8,9 @@ const router = new Router();
 
 router.get(`/`, async (req, res) => {
   const articles = await api.getArticles();
-  res.render(`articles`, {articles});
+  const categories = await api.getCategories();
+  console.log(articles);
+  res.render(`articles`, {articles, categories});
 });
 router.get(`/add`, (req, res) => res.render(`add-post`));
 router.get(`/edit/:id`, (req, res) => res.render(`articles-by-category`));

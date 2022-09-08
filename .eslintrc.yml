@@ -8,3 +8,6 @@ env:
   jest: true
 
 extends: "htmlacademy/node"
+
+ignorePatterns:
+  '**/express/public/**/*.js'

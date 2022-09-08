@@ -9,15 +9,16 @@ const startServer = (port) => {
   const app = express();
 
   app.use(express.json());
-  app.use(`/api/`, myRouters);
 
   app.use((req, res, next) => {
-    logger.debug(`Request on route ${req.url}`);
+    logger.info(`Request on route ${req.url}`);
     res.on(`finish`, () => {
       logger.info(`Response status code ${res.statusCode}`);
     });
     next();
   });
+
+  app.use(`/api/`, myRouters);
 
   // несуществующий маршрут
   app.use((req, res, next) => {
@@ -34,7 +35,7 @@ const startServer = (port) => {
 
   try {
     app.listen(port, () => {
-      return logger.info(`Listening to connections on ${port}`);
+      logger.info(`Listening to connections on ${port}`);
     });
 
   } catch (err) {
