@@ -7,7 +7,6 @@
     "start-front-server": "nodemon ./src/express/express.js",
     "start": "cross-env NODE_ENV=production node ./src/service/service.js --server",
     "start::debug": "cross-env NODE_ENV=development node ./src/service/service.js",
-    "test": "npm run eslint && npm run jest",
     "jest": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest",
     "eslint": "eslint --ext .js src/"
   },

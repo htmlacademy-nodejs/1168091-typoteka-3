@@ -1,8 +1,26 @@
 import {Router} from 'express';
+import {getDefaultAPI} from '../api.js';
+
+const api = getDefaultAPI();
 
 const router = new Router();
 
-router.get(`/`, (req, res) => res.render(`my`, {isLogin: true}));
-router.get(`/comments`, (req, res) => res.render(`comments`, {isLogin: true}));
+router.get(`/`, async (req, res) => {
+  const articles = await api.getArticles();
+  res.render(`my`, {isLogin: true, articles});
+});
+router.get(`/comments`, async (req, res) => {
+  const articles = await api.getArticles();
+
+  let comments = [];
+  articles.forEach((item) => {
+    comments = [
+      ...comments,
+      ...item.comments
+    ];
+  });
+
+  res.render(`comments`, {isLogin: true, comments});
+});
 
 export default router;

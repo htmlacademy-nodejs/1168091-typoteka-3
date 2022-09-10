@@ -1,3 +1,5 @@
+// npm run start::debug -- --server
+
 import {DEFAULT_PORT, HttpCode} from "../const.js";
 import myRouters from "../api/index.js";
 import express from "express";
@@ -10,6 +12,7 @@ const startServer = (port) => {
 
   app.use(express.json());
 
+  // все маршруты
   app.use((req, res, next) => {
     logger.info(`Request on route ${req.url}`);
     res.on(`finish`, () => {
