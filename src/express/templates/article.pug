@@ -12,10 +12,11 @@ block content
             time.post__date(datetime=article.createdDate) #{article.createdDate}
             h2.post__title.title.title--main #{article.title}
             ul.post__themes.themes
-              li.themes__item
-                a.themes__item-link(href='#') #{article.category}
-                  sup 88
-                button.themes__remove-btn(type='button') Удалить категорию
+              each category in categories
+                li.themes__item
+                  a.themes__item-link(href='#') #{category}
+                    sup 88
+                  button.themes__remove-btn(type='button') Удалить категорию
           .post__picture
             img(src='/img/sea-fullsize@1x.jpg' alt='пейзаж море, скалы, пляж')
           .post__text

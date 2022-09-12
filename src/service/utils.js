@@ -24,23 +24,23 @@ const createRandomDate = () => {
 };
 
 const getErrolList = (requireFields, gotFields) => {
-  const errolLisl = {};
+  const errolList = {};
 
   const keys = Object.keys(gotFields);
 
   requireFields.forEach((key) => {
     if (!keys.includes(key)) {
-      errolLisl[key] = `required field`;
+      errolList[key] = `required field`;
     }
   });
 
   keys.forEach((key) => {
     if (!requireFields.includes(key)) {
-      errolLisl[key] = `unknown field`;
+      errolList[key] = `unknown field`;
     }
   });
 
-  return errolLisl;
+  return errolList;
 
 };
 
