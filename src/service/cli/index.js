@@ -7,7 +7,7 @@ const Cli = {
   [generate.name]: generate,
   [help.name]: help,
   [version.name]: version,
-  [server.name]: server,
+  [server.name]: server
 };
 
 export default Cli;

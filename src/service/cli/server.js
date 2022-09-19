@@ -16,7 +16,8 @@ const startServer = (port) => {
   app.use((req, res, next) => {
     logger.info(`Request on route ${req.url}`);
     res.on(`finish`, () => {
-      logger.info(`Response status code ${res.statusCode}`);
+      logger.info(`Method: ${req.method}. Response status code ${res.statusCode}`);
+      console.log(res);
     });
     next();
   });

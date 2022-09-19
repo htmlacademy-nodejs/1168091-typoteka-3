@@ -4,12 +4,15 @@ export class CategoryService {
   }
 
   findAll() {
-    const categories = this._articles.reduce(
-        (acc, article) => {
-          acc.add(article.category);
-          return acc;
-        },
-        new Set());
+
+    const categories = new Set();
+
+    this._articles.forEach((article) => {
+      article.categories.forEach((category) => {
+        categories.add(category);
+      });
+    });
+
     return [...categories];
   }
 }

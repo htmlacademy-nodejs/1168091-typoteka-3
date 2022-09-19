@@ -40,7 +40,7 @@ const generatePosts = (count, titles, categories, sentences, comments) => {
       createdDate: createRandomDate(),
       announce: sentences[getRandomInt(0, sentences.length - 1)],
       fullText: shuffle(sentences).slice(1, 5).join(` `),
-      category: categories[getRandomInt(0, categories.length - 1)],
+      categories: categories.slice(getRandomInt(0, categories.length - 1)),
       comments: new Array(getRandomInt(0, MAX_COMMENTS_IN_POST))
         .fill({})
         .map(() => ({

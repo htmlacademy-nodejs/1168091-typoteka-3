@@ -14,5 +14,4 @@ export default (requiredFields) => (req, res, next) => {
   }
 
   next();
-
 };

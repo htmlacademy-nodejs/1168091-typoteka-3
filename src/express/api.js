@@ -38,10 +38,11 @@ class API {
   }
 
   async createArticle(data) {
-    return await this._load(`${Path.ARTICLES}`, {
+    const res = await this._load(`${Path.ARTICLES}`, {
       method: `POST`,
       data,
     });
+    return res;
   }
 
   async createComment(articleId, data) {

@@ -18,12 +18,14 @@ export class ArticlesService {
   create(article) {
     const newArticle = Object.assign({
       id: nanoid(MAX_ID_LENGTH),
-      createdDate: new Date().toISOString(),
       comments: []
     }, article);
 
+    if (!newArticle.createdDate) {
+      newArticle.createdDate = new Date().toISOString();
+    }
+
     this._articles.push(newArticle);
-    console.log(`create`, this._articles.length);
     return newArticle;
   }
 
