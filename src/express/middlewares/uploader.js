@@ -2,9 +2,9 @@ import multer from 'multer';
 import path from 'path';
 import {nanoid} from 'nanoid';
 
-const __dirname = path.resolve();
+const currentPath = process.cwd();
 const UPLOAD_DIR = `src/express/upload/img`;
-const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
+const uploadDirAbsolute = path.resolve(currentPath, UPLOAD_DIR);
 
 const FILE_TYPES = [`image/png`, `image/jpg`, `image/jpeg`];
 

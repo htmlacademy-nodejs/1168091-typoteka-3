@@ -1,13 +1,13 @@
 // npm run start::debug -- --server
 
 import {DEFAULT_PORT, HttpCode} from "../const.js";
-import myRouters from "../api/index.js";
+import {createRoutes} from "../api/index.js";
 import express from "express";
 import {getLogger} from "../lib/logger.js";
 
 const logger = getLogger({name: `api`});
 
-const startServer = (port) => {
+const startServer = async (port) => {
   const app = express();
 
   app.use(express.json());
@@ -22,13 +22,14 @@ const startServer = (port) => {
     next();
   });
 
+  const myRouters = await createRoutes();
+
   app.use(`/api/`, myRouters);
 
   // несуществующий маршрут
-  app.use((req, res, next) => {
+  app.use((req, res, _next) => {
     res.status(HttpCode.NOT_FOUND).send(`Not found`);
     logger.error(`Route not found: ${req.url}`);
-    next();
   });
 
   // любые ошибки
@@ -36,16 +37,12 @@ const startServer = (port) => {
     logger.error(`An error occurred on processing request: ${err.message}`);
   });
 
-
-  try {
-    app.listen(port, () => {
-      logger.info(`Listening to connections on ${port}`);
-    });
-
-  } catch (err) {
+  app.listen(port, () => {
+    logger.info(`Listening to connections on ${port}`);
+  }).on(`error`, (err) => {
     logger.error(`An error occurred: ${err.message}`);
     process.exit(1);
-  }
+  });
 };
 
 export default {

@@ -8,7 +8,8 @@
     "start": "cross-env NODE_ENV=production node ./src/service/service.js",
     "start::debug": "cross-env NODE_ENV=development nodemon ./src/service/service.js",
     "jest": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest",
-    "eslint": "eslint --ext .js src/"
+    "eslint": "eslint --ext .js src/",
+    "test": "npm run eslint && npm run jest"
   },
   "type": "module",
   "repository": {

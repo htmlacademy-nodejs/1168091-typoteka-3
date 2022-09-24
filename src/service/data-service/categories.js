@@ -4,15 +4,6 @@ export class CategoryService {
   }
 
   findAll() {
-
-    const categories = new Set();
-
-    this._articles.forEach((article) => {
-      article.categories.forEach((category) => {
-        categories.add(category);
-      });
-    });
-
-    return [...categories];
+    return [...new Set(this._articles.flatMap((item) => item.categories))];
   }
 }
