@@ -38,7 +38,7 @@ CREATE TABLE comments(
 
 CREATE TABLE articles_categories(
   articles_id integer NOT NULL,
-  categories_id integer NOT NULL
+  categories_id integer NOT NULL,
   FOREIGN KEY (articles_id) REFERENCES articles(id),
   FOREIGN KEY (categories_id) REFERENCES categories(id)
 );
