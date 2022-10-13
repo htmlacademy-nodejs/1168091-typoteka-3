@@ -1,7 +1,7 @@
 import pino from 'pino';
 import {Env} from '../const.js';
 
-const LOG_FILE = `logs/api.logs`;
+const LOG_FILE = `./logs/api.logs`;
 const isDevMode = process.env.NODE_ENV === Env.DEVELOPMENT;
 
 const pinoOptions = {

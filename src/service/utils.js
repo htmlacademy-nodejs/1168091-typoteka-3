@@ -1,3 +1,6 @@
+import chalk from "chalk";
+import fs from "fs/promises";
+
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -44,4 +47,15 @@ const getErrolList = (requireFields, gotFields) => {
 
 };
 
-export {getRandomInt, shuffle, createRandomDate, getErrolList};
+const readContent = async (filePath) => {
+  try {
+    const content = await fs.readFile(filePath, `utf8`);
+    return content.split(`\n`);
+  } catch (err) {
+    console.error(chalk.red(err));
+    return [];
+  }
+};
+
+
+export {getRandomInt, shuffle, createRandomDate, getErrolList, readContent};

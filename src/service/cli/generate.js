@@ -1,7 +1,7 @@
 import {nanoid} from "nanoid";
 import chalk from "chalk";
 import fs from "fs/promises";
-import {getRandomInt, shuffle, createRandomDate} from "../utils.js";
+import {getRandomInt, shuffle, createRandomDate, readContent} from "../utils.js";
 import {
   MAX_COUNT,
   DEFAULT_COUNT,
@@ -14,16 +14,6 @@ import {
   MAX_COMMENTS_IN_POST,
   MAX_ID_LENGTH
 } from "../const.js";
-
-const readContent = async (filePath) => {
-  try {
-    const content = await fs.readFile(filePath, `utf8`);
-    return content.split(`\n`);
-  } catch (err) {
-    console.error(chalk.red(err));
-    return [];
-  }
-};
 
 const generatePosts = (count, titles, categories, sentences, comments) => {
   if (count > MAX_COUNT) {

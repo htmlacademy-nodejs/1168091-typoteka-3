@@ -10,6 +10,7 @@ const logger = getLogger({name: `api`});
 const startServer = async (port) => {
   const app = express();
 
+
   app.use(express.json());
 
   // все маршруты
