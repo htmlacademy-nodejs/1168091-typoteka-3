@@ -53,22 +53,26 @@ const users = [
 
 const getPictureFileName = (number) => `item${number.toString().padStart(2, 0)}.jpg`;
 
-const generateArticles = (count, titles, sentences, userCount) => {
-  return Array(count).fill({}).map(() => ({
-    title: titles[getRandomInt(0, titles.length - 1)],
-    announce: sentences[getRandomInt(0, sentences.length - 1)],
-    fullText: shuffle(sentences).slice(1, 5).join(` `),
-    picture: getPictureFileName(getRandomInt(PictureRestrict.MIN, PictureRestrict.MAX)),
-    userId: getRandomInt(1, userCount)
-  }));
-};
+const generateArticles = (count, titles, sentences, userCount) => (
+  Array.from({length: count}, () => (
+    {
+      title: titles[getRandomInt(0, titles.length - 1)],
+      announce: sentences[getRandomInt(0, sentences.length - 1)],
+      fullText: shuffle(sentences).slice(1, 5).join(` `),
+      picture: getPictureFileName(getRandomInt(PictureRestrict.MIN, PictureRestrict.MAX)),
+      userId: getRandomInt(1, userCount)
+    }
+  ))
+);
 
 const generateComments = (count, articleId, userCount, comments) => (
-  Array(count).fill({}).map(() => ({
-    fullText: shuffle(comments).slice(0, getRandomInt(1, 3)).join(` `),
-    articleId,
-    userId: getRandomInt(1, userCount)
-  }))
+  Array.from({length: count}, () => (
+    {
+      fullText: shuffle(comments).slice(0, getRandomInt(1, 3)).join(` `),
+      articleId,
+      userId: getRandomInt(1, userCount)
+    }
+  ))
 );
 
 export default {
