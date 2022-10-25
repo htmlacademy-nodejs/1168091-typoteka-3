@@ -30,11 +30,6 @@ FROM articles
   ORDER BY articles.created_at DESC
 
 -- полная информацию определённой публикации
--- (идентификатор публикации, заголовок публикации,
---  анонс, полный текст публикации, дата публикации,
---  путь к изображению, имя и фамилия автора,
---  контактный email, количество комментариев,
---  наименование категорий);
 
 SELECT articles.*,
   count(comments.id) as comments_count,
@@ -50,5 +45,28 @@ FROM articles
 WHERE articles.id = 2
   GROUP BY articles.id, users.id
   ORDER BY articles.created_at DESC
+
+-- Получить список из 5 свежих комментариев
+SELECT comments.*,
+  users.first_name,
+  users.last_name
+FROM comments
+  JOIN users ON users.id = comments.user_id
+  ORDER BY comments.created_at
+  LIMIT 5
+
+-- Получить список комментариев для определённой публикации
+SELECT comments.*,
+  users.first_name,
+  users.last_name
+FROM comments
+  JOIN users ON users.id = comments.user_id
+WHERE comments.article_id = 2
+  ORDER BY comments.created_at
+
+-- Обновить заголовок определённой публикации
+UPDATE articles
+SET title = 'Как я встретил новый год'
+WHERE id = 1
 
 
