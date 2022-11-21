@@ -1,9 +1,9 @@
 // npm run start::debug -- --server
-
 import {DEFAULT_PORT, HttpCode} from "../const.js";
 import {createRoutes} from "../api/index.js";
 import express from "express";
 import {getLogger} from "../lib/logger.js";
+import {sequelize} from "../lib/sequelize.js";
 
 const logger = getLogger({name: `api`});
 
@@ -48,9 +48,26 @@ const startServer = async (port) => {
 
 export default {
   name: `--server`,
-  run(args) {
+  async run(args) {
+    try {
+      logger.info(`Trying to connect to database...`);
+      await sequelize.authenticate();
+    } catch (err) {
+      logger.error(`Data base error: ${err.message}`);
+      process.exit(1);
+    }
+
     const [count] = args;
     const port = Number.parseInt(count, 10) || DEFAULT_PORT;
-    startServer(port);
+
+
+    logger.info(`Connection to database established`);
+
+    try {
+      await startServer(port);
+    } catch (err) {
+      logger.error(`Start server error: ${err.message}`);
+      process.exit(1);
+    }
   },
 };
