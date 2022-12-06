@@ -1,10 +1,10 @@
-import {article} from "./article";
-import {category} from "./category";
-import {comment} from "./comment";
-import {user} from "./user";
-import {articlesCategories} from "./articlesCAtegories";
+import {article} from "./article.js";
+import {category} from "./category.js";
+import {comment} from "./comment.js";
+import {user} from "./user.js";
+import {articlesCategories} from "./articlesCAtegories.js";
 
-import Alias from "./alias";
+import Alias from "./alias.js";
 
 export default (sequelize) => {
   const Article = article(sequelize);
@@ -20,6 +20,7 @@ export default (sequelize) => {
     onDelete: `cascade`
   });
   Article.belongsTo(User, {
+    as: Alias.USERS,
     foreignKey: `userId`
   });
 
@@ -40,6 +41,7 @@ export default (sequelize) => {
     onDelete: `cascade`
   });
   Comment.belongsTo(User, {
+    as: Alias.USERS,
     foreignKey: `userId`
   });
 
@@ -47,10 +49,15 @@ export default (sequelize) => {
   // у публикации много категорий и у категории много публикаций. связь через ArticlesCategories
   Article.belongsToMany(Category, {
     through: ArticlesCategories,
-    as: Alias.ARTICLES_CATEGORIES
+    as: Alias.CATEGORIES
   });
   Category.belongsToMany(Article, {
     through: ArticlesCategories,
+    as: Alias.ARTICLES
+  });
+  Category.hasMany(ArticlesCategories, {
     as: Alias.ARTICLES_CATEGORIES
   });
+
+  return {Article, Category, Comment, User, ArticlesCategories};
 };
