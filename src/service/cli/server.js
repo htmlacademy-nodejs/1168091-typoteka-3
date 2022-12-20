@@ -18,7 +18,6 @@ const startServer = async (port) => {
     logger.info(`Request on route ${req.url}`);
     res.on(`finish`, () => {
       logger.info(`Method: ${req.method}. Response status code ${res.statusCode}`);
-      console.log(res);
     });
     next();
   });

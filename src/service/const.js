@@ -3,7 +3,6 @@ const DEFAULT_PORT = 3000;
 const MAX_COUNT = 1000;
 const MAX_COMMENTS_IN_POST = 5;
 const PACKAGE_JSON_PATH = `./package.json`;
-const FILE_NAME = `./mocks.json`;
 const FILE_SENTENCES_PATH = `./data/sentences.txt`;
 const FILE_TITLES_PATH = `./data/titles.txt`;
 const FILE_CATEGORIES_PATH = `./data/categories.txt`;
@@ -42,6 +41,12 @@ const HttpCode = {
 const Env = {
   DEVELOPMENT: `development`,
   PRODUCTION: `production`
+};
+
+const UserRole = {
+  GUEST: `guest`,
+  AUTHOR: `author`,
+  READER: `reader`
 };
 
 const testMockData = [
@@ -135,7 +140,6 @@ export {
   DEFAULT_COUNT,
   DEFAULT_PORT,
   MAX_COUNT,
-  FILE_NAME,
   FILE_SENTENCES_PATH,
   FILE_TITLES_PATH,
   FILE_CATEGORIES_PATH,
@@ -149,5 +153,6 @@ export {
   PACKAGE_JSON_PATH,
   MAX_ID_LENGTH,
   testMockData,
+  UserRole,
   Env
 };

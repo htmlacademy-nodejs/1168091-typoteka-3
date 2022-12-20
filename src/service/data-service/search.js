@@ -1,10 +1,25 @@
+import {Op} from 'sequelize';
+import Alias from '../models/alias.js';
+
 export class SearchService {
-  constructor(articles) {
-    this._articles = articles;
+  constructor(sequelize) {
+    this._Article = sequelize.models.Article;
   }
 
 
-  findAll(query) {
-    return this._articles.filter((item) => item.title.includes(query));
+  async findAll(searchText) {
+    const articles = await this._Article.findAll({
+      where: {
+        title: {
+          [Op.substring]: searchText
+        }
+      },
+      include: [Alias.CATEGORIES],
+      order: [
+        [`createdAt`, `DESC`]
+      ]
+    });
+
+    return articles.map((article) => article.get());
   }
 }

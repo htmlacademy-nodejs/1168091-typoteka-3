@@ -9,6 +9,7 @@ import {
   FILE_CATEGORIES_PATH,
   FILE_COMMENTS_PATH,
   MAX_COMMENTS_IN_POST,
+  UserRole
 } from "../const.js";
 
 const FILE_NAME = `./fill-db.sql`;
@@ -18,12 +19,6 @@ const PictureRestrict = {
   MAX: 16,
 };
 
-const USerRole = {
-  GUEST: `guest`,
-  AUTHOR: `author`,
-  READER: `reader`
-};
-
 const users = [
   {
     email: `ivanov@example.com`,
@@ -31,7 +26,7 @@ const users = [
     firstName: `Иван`,
     lastName: `Иванов`,
     avatar: `avatar1.jpg`,
-    role: USerRole.AUTHOR
+    role: UserRole.AUTHOR
   },
   {
     email: `petrov@example.com`,
@@ -39,7 +34,7 @@ const users = [
     firstName: `Пётр`,
     lastName: `Петров`,
     avatar: `avatar2.jpg`,
-    role: USerRole.GUEST
+    role: UserRole.GUEST
   },
   {
     email: `sidorov@example.com`,
@@ -47,7 +42,7 @@ const users = [
     firstName: `Сидр`,
     lastName: `Сидорович`,
     avatar: `avatar3.jpg`,
-    role: USerRole.READER
+    role: UserRole.READER
   }
 ];
 

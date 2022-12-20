@@ -34,8 +34,8 @@ block content
                 .new-publication__category-wrapper
                   each category, index in categories
                     .new-publication__checkbox.new-publication__checkbox--auto
-                      input(type='checkbox' name='category' id=`category-${index}` value=category checked=dataForm.categories.includes(category))
-                      label(for=`category-${index}`) #{category}
+                      input(type='checkbox' name='category' id=`category-${index}` value=category.name checked=dataForm.categories.includes(category.name))
+                      label(for=`category-${index}`) #{category.name}
                   a.new-publication__form-link.button.button--transparent(href='/categories') Добавить категорию
               .form__wrapper.form__wrapper--text
                 .form__field.form__field--publication-text

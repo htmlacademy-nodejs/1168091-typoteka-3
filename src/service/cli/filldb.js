@@ -10,7 +10,8 @@ import {
   FILE_TITLES_PATH,
   FILE_CATEGORIES_PATH,
   FILE_COMMENTS_PATH,
-  MAX_COMMENTS_IN_POST
+  MAX_COMMENTS_IN_POST,
+  UserRole
 } from "../const.js";
 
 import {sequelize} from "../lib/sequelize.js";
@@ -25,11 +26,6 @@ const PictureRestrict = {
   MAX: 16,
 };
 
-const UserRole = {
-  GUEST: `guest`,
-  AUTHOR: `author`,
-  READER: `reader`
-};
 
 const getRandomSubarray = (items) => {
   items = items.slice();
@@ -91,7 +87,7 @@ export default {
         passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
         firstName: `Иван`,
         lastName: `Иванов`,
-        avatar: `avatar1.jpg`,
+        avatar: `avatar-1.png`,
         role: UserRole.AUTHOR
       },
       {
@@ -99,7 +95,7 @@ export default {
         passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
         firstName: `Пётр`,
         lastName: `Петров`,
-        avatar: `avatar2.jpg`,
+        avatar: `avatar-2.png`,
         role: UserRole.GUEST
       },
       {
@@ -107,7 +103,7 @@ export default {
         passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
         firstName: `Сидр`,
         lastName: `Сидорович`,
-        avatar: `avatar3.jpg`,
+        avatar: `avatar-3.png`,
         role: UserRole.READER
       }
     ];
@@ -127,7 +123,6 @@ export default {
     logger.info(`Connection to database established`);
 
 
-    await initDb(sequelize, {users, categories, articles});
-
+    return initDb(sequelize, {users, categories, articles});
   },
 };

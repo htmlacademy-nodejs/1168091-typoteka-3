@@ -1,76 +1,103 @@
-import {nanoid} from "nanoid";
-import {MAX_ID_LENGTH} from "../const.js";
+import Alias from "../models/alias.js";
+import {Sequelize} from "sequelize";
 
 export class ArticlesService {
-  constructor(articles) {
-    this._articles = articles;
+  constructor(sequelize) {
+    this._Article = sequelize.models.Article;
+    this._Category = sequelize.models.Category;
+    this._User = sequelize.models.User;
+    this._Comment = sequelize.models.Comment;
+    this._ArticlesCategories = sequelize.models.ArticlesCategories;
   }
 
-  findAll() {
-    return this._articles;
+  async create(article) {
+    const newArticle = await this._Article.create(article);
+    await newArticle.addCategories(article.categories);
+    return newArticle.get();
   }
 
-
-  findOne(id) {
-    return this._articles.find((item) => item.id === id);
-  }
-
-  create(article) {
-    const newArticle = Object.assign({
-      id: nanoid(MAX_ID_LENGTH),
-      comments: []
-    }, article);
-
-    if (!newArticle.createdDate) {
-      newArticle.createdDate = new Date().toISOString();
-    }
-
-    this._articles.push(newArticle);
-    return newArticle;
-  }
-
-  update(oldArticle, article) {
-    const index = this._articles.findIndex((item) => item.id === oldArticle.id);
-    const changedArticle = Object.assign(oldArticle, article);
-    this._articles = [
-      ...this._articles.slice(0, index),
-      changedArticle,
-      ...this._articles.slice(index + 1)
-    ];
-    return changedArticle;
-  }
-
-  delete(id) {
-    this._articles = this._articles.filter((item) => id !== item.id);
-  }
-
-  findComments(id) {
-    const article = this._articles.find((item) => item.id === id);
-    return article
-      ? article.comments
-      : [];
-  }
-
-  deleteComment(articleId, commentId) {
-    const article = this._articles.find((item) => item.id === articleId);
-
-    if (!article) {
-      return false;
-    }
-
-    const {comments} = article;
-
-    return comments.filter((item) => commentId !== item.id);
-  }
-
-  createComment(article, text) {
-    const {comments} = article;
-
-    comments.push({
-      id: nanoid(MAX_ID_LENGTH),
-      text
+  async delete(id) {
+    const deleteRows = await this._Article.destroy({
+      where: {id}
     });
 
-    return comments;
+    return !!deleteRows;
+  }
+
+  async findOne(articleId) {
+
+    const options = {
+      include: [
+        {
+          model: this._Category,
+          as: Alias.CATEGORIES,
+          attributes: [
+            `id`,
+            `name`
+          ],
+          include: [{
+            model: this._ArticlesCategories,
+            as: Alias.ARTICLES_CATEGORIES,
+            attributes: [
+              [Sequelize.fn(`COUNT`, Sequelize.col(`CategoryId`)), `total`],
+            ]
+          }],
+        },
+        {
+          model: this._Comment,
+          as: Alias.COMMENTS,
+          include: [
+            {
+              model: this._User,
+              as: Alias.USERS,
+              attributes: {
+                exclude: [`passwordHash`]
+              }
+            }
+          ],
+          attributes: {
+            exclude: [`userId`]
+          }
+        },
+        {
+          model: this._User,
+          as: Alias.USERS,
+          attributes: {
+            exclude: [`passwordHash`]
+          }
+        }
+      ],
+      where: [{
+        id: articleId
+      }],
+      attributes: [`id`, `title`, `announce`, `fullText`, `picture`, `createdAt`]
+    };
+
+    return await this._Article.findOne(options);
+  }
+
+  async update(id, article) {
+    const [affectedRows] = await this._Article.update(article, {
+      where: {id}
+    });
+
+    return !!affectedRows;
+  }
+
+  async findAll(needComments = false) {
+    const include = [Alias.CATEGORIES];
+
+    if (needComments) {
+      include.push(Alias.COMMENTS);
+    }
+
+    const articles = await this._Article.findAll({
+      include,
+      order: [
+        [`createdAt`, `DESC`]
+      ]
+    });
+
+    return articles.map((article) => article.get());
   }
 }

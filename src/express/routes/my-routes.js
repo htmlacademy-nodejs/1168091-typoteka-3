@@ -10,7 +10,7 @@ router.get(`/`, async (req, res) => {
   res.render(`my`, {isLogin: true, articles});
 });
 router.get(`/comments`, async (req, res) => {
-  const articles = await api.getArticles();
+  const articles = await api.getArticles({comments: true});
 
   let comments = [];
   articles.forEach((item) => {

@@ -25,8 +25,8 @@ class API {
     return response.data;
   }
 
-  async getArticles() {
-    return await this._load(Path.ARTICLES);
+  async getArticles({comments}) {
+    return await this._load(Path.ARTICLES, {params: {comments}});
   }
 
   async getOneArticle(articleId) {
@@ -72,8 +72,8 @@ class API {
     });
   }
 
-  async getCategories() {
-    return await this._load(Path.CATEGORIES);
+  async getCategories({withCount}) {
+    return await this._load(Path.CATEGORIES, {params: {withCount}});
   }
 
   async search(query) {

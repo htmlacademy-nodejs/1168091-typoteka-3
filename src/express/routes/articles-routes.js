@@ -10,14 +10,15 @@ const router = new Router();
 
 router.get(`/`, async (req, res) => {
   const [articles, categories] = await Promise.all([
-    api.getArticles(),
-    api.getCategories()
+    api.getArticles({comments: true}),
+    api.getCategories({withCount: true})
   ]);
 
   res.render(`articles`, {articles, categories});
 });
+
 router.get(`/add`, async (req, res) => {
-  const categories = await api.getCategories();
+  const categories = await api.getCategories({withCount: false});
   const dateNowISO = moment(Date.now()).toISOString();
 
   const dataForm = {
@@ -29,6 +30,7 @@ router.get(`/add`, async (req, res) => {
 
   res.render(`add-post`, {dataForm, dateNowISO, categories});
 });
+
 router.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
   try {
@@ -41,7 +43,12 @@ router.get(`/edit/:id`, async (req, res) => {
     }
   }
 });
-router.get(`/category/:id`, (req, res) => res.render(`articles`));
+
+router.get(`/category/:id`, (req, res) => {
+  // все публикации в данной категории
+  res.render(`articles`);
+});
+
 router.get(`/:id`, async (req, res) => {
   const {id} = req.params;
   try {

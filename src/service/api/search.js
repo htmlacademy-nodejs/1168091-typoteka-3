@@ -3,7 +3,7 @@ import {HttpCode} from "../const.js";
 
 const route = new Router();
 
-export default (app, service) => {
+export default (app, searchService) => {
   app.use(`/search`, route);
 
   route.get(`/`, async (req, res) => {
@@ -15,7 +15,7 @@ export default (app, service) => {
       .send(`Bad request`);
     }
 
-    const result = service.findAll(query);
+    const result = await searchService.findAll(query);
     const statusCode = result.length ? HttpCode.OK : HttpCode.NOT_FOUND;
 
     return res.status(statusCode)

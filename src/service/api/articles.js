@@ -8,18 +8,20 @@ const REQUIRED_COMMENT_FIELDS = [`text`];
 
 const route = new Router();
 
-export default (app, articleService) => {
+export default (app, articleService, commentService) => {
   app.use(`/articles`, route);
 
   route.get(`/`, async (req, res) => {
-    const articles = await articleService.findAll();
+    const {comments} = req.query;
+
+    const articles = await articleService.findAll(comments);
     res.status(HttpCode.OK)
       .json(articles);
   });
 
-  route.get(`/:articleId`, (req, res) => {
+  route.get(`/:articleId`, async (req, res) => {
     const {articleId} = req.params;
-    const article = articleService.findOne(articleId);
+    const article = await articleService.findOne(articleId);
 
     if (!article) {
       return res.status(HttpCode.NOT_FOUND)
@@ -30,18 +32,18 @@ export default (app, articleService) => {
       .json(article);
   });
 
-  route.get(`/:articleId/comments`, articleExist(articleService), (req, res) => {
+  route.get(`/:articleId/comments`, articleExist(articleService), async (req, res) => {
     const {article: {id}} = res.locals;
 
-    const comments = articleService.findComments(id);
+    const comments = await commentService.findAll(id);
 
     return res.status(HttpCode.OK)
       .json(comments);
   });
 
-  route.post(`/`, requiredFieldsValidation(REQUIRED_ARTICLE_FIELDS), (req, res) => {
+  route.post(`/`, requiredFieldsValidation(REQUIRED_ARTICLE_FIELDS), async (req, res) => {
 
-    const article = articleService.create(req.body);
+    const article = await articleService.create(req.body);
 
     return res.status(HttpCode.CREATED)
       .json(article);
@@ -50,10 +52,10 @@ export default (app, articleService) => {
   route.post(
       `/:articleId/comments`,
       [articleExist(articleService), requiredFieldsValidation(REQUIRED_COMMENT_FIELDS)],
-      (req, res) => {
-        const {article} = res.locals;
+      async (req, res) => {
+        const {article: {id}} = res.locals;
         const {text} = req.body;
-        const comment = articleService.createComment(article, text);
+        const comment = await commentService.create(id, text);
 
         return res.status(HttpCode.OK)
       .json(comment);
@@ -67,9 +69,9 @@ export default (app, articleService) => {
     return res.status(HttpCode.OK).json({id}).send(`Article ${id} was deleted`);
   });
 
-  route.delete(`/:articleId/comments/:commentId`, articleExist(articleService), (req, res) => {
-    const {articleId, commentId} = req.params;
-    const comments = articleService.deleteComment(articleId, commentId);
+  route.delete(`/:articleId/comments/:commentId`, articleExist(articleService), async (req, res) => {
+    const {commentId} = req.params;
+    const comments = await commentService.delete(commentId);
 
     return res.status(HttpCode.OK)
       .json(comments);
@@ -77,11 +79,11 @@ export default (app, articleService) => {
 
   route.put(`/:articleId`,
       [articleExist(articleService), requiredFieldsValidation(REQUIRED_ARTICLE_FIELDS)],
-      (req, res) => {
-        const {article} = res.locals;
+      async (req, res) => {
+        const {article: {id}} = res.locals;
         const newArticle = req.body;
 
-        const changedArticle = articleService.update(article, newArticle);
+        const changedArticle = await articleService.update(id, newArticle);
 
         return res.status(HttpCode.OK).json(changedArticle);
       }

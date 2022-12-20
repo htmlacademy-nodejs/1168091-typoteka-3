@@ -7,7 +7,9 @@ export default (app, service) => {
   app.use(`/categories`, route);
 
   route.get(`/`, async (req, res) => {
-    const categories = await service.findAll();
+    const {withCount} = req.query;
+
+    const categories = await service.findAll(withCount);
     res.status(HttpCode.OK)
       .json(categories);
   });
