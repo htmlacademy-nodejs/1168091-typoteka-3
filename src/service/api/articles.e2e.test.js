@@ -112,7 +112,8 @@ describe(`API changes existent article`, () => {
     announce: `New announce`,
     fullText: `New full text`,
     categories: [`1`],
-    picture: `lamp.jpg`
+    picture: `lamp.jpg`,
+    createdDate: `2023-01-05T10:07:20.455Z`
   };
 
   let api;
@@ -203,7 +204,8 @@ describe(`API creates an article if data is valid`, () => {
     announce: `New announce`,
     fullText: `New full text`,
     categories: [`1`],
-    picture: `lamp.jpg`
+    picture: `lamp.jpg`,
+    createdDate: `2023-01-05T10:07:20.455Z`
   };
 
   let api;

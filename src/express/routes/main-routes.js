@@ -26,6 +26,9 @@ router.get(`/search`, async (req, res) => {
     res.render(`search`, {result: [], search});
   }
 });
-router.get(`/categories`, (req, res) => res.render(`categories`));
+router.get(`/categories`, async (req, res) => {
+  const categories = await api.getCategories({withCount: false});
+  res.render(`categories`, {categories});
+});
 
 export default router;

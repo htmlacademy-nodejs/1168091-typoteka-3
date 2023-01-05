@@ -3,7 +3,7 @@ import {HttpCode} from "../const.js";
 import requiredFieldsValidation from "../middlewares/required-fields-validation.js";
 import articleExist from "../middlewares/article-exist.js";
 
-const REQUIRED_ARTICLE_FIELDS = [`title`, `announce`, `fullText`, `categories`, `picture`];
+const REQUIRED_ARTICLE_FIELDS = [`title`, `announce`, `fullText`, `categories`, `picture`, `createdDate`];
 const REQUIRED_COMMENT_FIELDS = [`fullText`];
 
 const route = new Router();
