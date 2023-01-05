@@ -1,8 +1,8 @@
 import {HttpCode} from "../const.js";
 
-export default (service) => (req, res, next) => {
+export default (service) => async (req, res, next) => {
   const {articleId} = req.params;
-  const article = service.findOne(articleId);
+  const article = await service.findOne(articleId);
 
   if (!article) {
     res.status(HttpCode.NOT_FOUND)

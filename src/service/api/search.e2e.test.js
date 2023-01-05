@@ -1,13 +1,22 @@
+import {Sequelize} from "sequelize";
 import express from "express";
 import request from "supertest";
 import search from "./search.js";
 import {SearchService} from "../data-service";
 import {HttpCode} from "../const.js";
-import {testMockData} from "../const.js";
+import {testMockData, mockCategories, mockUsers} from "../const.js";
+import initDb from "../lib/init-db.js";
+
+const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
 
 const app = express();
 app.use(express.json());
-search(app, new SearchService(testMockData));
+
+beforeAll(async () => {
+  await initDb(mockDB, {categories: mockCategories, users: mockUsers, articles: testMockData});
+  search(app, new SearchService(mockDB));
+});
+
 
 describe(`API returns offer based on search query`, () => {
   let response;
@@ -16,13 +25,13 @@ describe(`API returns offer based on search query`, () => {
     response = await request(app)
       .get(`/search`)
       .query({
-        query: `Борьба с прокрастинацией`
+        query: `золотое сечение`
       });
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
   test(`1 offer found`, () => expect(response.body.length).toBe(1));
-  test(`Offer has correct id`, () => expect(response.body[0].id).toBe(`rZyP5I`));
+  test(`Article has correct title`, () => expect(response.body[0].title).toBe(`Что такое золотое сечение`));
 });
 
 test(`API returns code 404 if nothing is found`,

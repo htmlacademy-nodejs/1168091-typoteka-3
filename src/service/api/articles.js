@@ -3,7 +3,7 @@ import {HttpCode} from "../const.js";
 import requiredFieldsValidation from "../middlewares/required-fields-validation.js";
 import articleExist from "../middlewares/article-exist.js";
 
-const REQUIRED_ARTICLE_FIELDS = [`title`, `announce`, `fullText`, `categories`, `createdDate`, `picture`];
+const REQUIRED_ARTICLE_FIELDS = [`title`, `announce`, `fullText`, `categories`, `picture`];
 const REQUIRED_COMMENT_FIELDS = [`fullText`];
 
 const route = new Router();
@@ -33,9 +33,10 @@ export default (app, articleService, commentService) => {
   });
 
   route.get(`/:articleId/comments`, articleExist(articleService), async (req, res) => {
-    const {article: {id}} = res.locals;
 
-    const comments = await commentService.findAll(id);
+    const {articleId} = req.params;
+
+    const comments = await commentService.findAll(articleId);
 
     return res.status(HttpCode.OK)
       .json(comments);

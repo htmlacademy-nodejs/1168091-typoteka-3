@@ -11,7 +11,7 @@ import {
   FILE_CATEGORIES_PATH,
   FILE_COMMENTS_PATH,
   MAX_COMMENTS_IN_POST,
-  UserRole
+  mockUsers
 } from "../const.js";
 
 import {sequelize} from "../lib/sequelize.js";
@@ -81,37 +81,10 @@ export default {
       readContent(FILE_COMMENTS_PATH),
     ]);
 
-    const users = [
-      {
-        email: `ivanov@example.com`,
-        passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
-        firstName: `Иван`,
-        lastName: `Иванов`,
-        avatar: `avatar-1.png`,
-        role: UserRole.AUTHOR
-      },
-      {
-        email: `petrov@example.com`,
-        passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
-        firstName: `Пётр`,
-        lastName: `Петров`,
-        avatar: `avatar-2.png`,
-        role: UserRole.GUEST
-      },
-      {
-        email: `sidorov@example.com`,
-        passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
-        firstName: `Сидр`,
-        lastName: `Сидорович`,
-        avatar: `avatar-3.png`,
-        role: UserRole.READER
-      }
-    ];
-
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
 
-    const articles = generateArticles(countOffer, titles, sentences, categories, comments, users);
+    const articles = generateArticles(countOffer, titles, sentences, categories, comments, mockUsers);
 
     try {
       logger.info(`Trying to connect to database...`);
@@ -123,6 +96,6 @@ export default {
     logger.info(`Connection to database established`);
 
 
-    return initDb(sequelize, {users, categories, articles});
+    return initDb(sequelize, {mockUsers, categories, articles});
   },
 };
