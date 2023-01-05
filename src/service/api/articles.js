@@ -3,8 +3,8 @@ import {HttpCode} from "../const.js";
 import requiredFieldsValidation from "../middlewares/required-fields-validation.js";
 import articleExist from "../middlewares/article-exist.js";
 
-const REQUIRED_ARTICLE_FIELDS = [`title`, `announce`, `fullText`, `categories`, `createdDate`, `photo`];
-const REQUIRED_COMMENT_FIELDS = [`text`];
+const REQUIRED_ARTICLE_FIELDS = [`title`, `announce`, `fullText`, `categories`, `createdDate`, `picture`];
+const REQUIRED_COMMENT_FIELDS = [`fullText`];
 
 const route = new Router();
 
@@ -43,7 +43,11 @@ export default (app, articleService, commentService) => {
 
   route.post(`/`, requiredFieldsValidation(REQUIRED_ARTICLE_FIELDS), async (req, res) => {
 
-    const article = await articleService.create(req.body);
+    const newArticle = req.body;
+
+    newArticle.userId = 1; // TODO: Бэк вставляет userId
+
+    const article = await articleService.create(newArticle);
 
     return res.status(HttpCode.CREATED)
       .json(article);
@@ -53,9 +57,11 @@ export default (app, articleService, commentService) => {
       `/:articleId/comments`,
       [articleExist(articleService), requiredFieldsValidation(REQUIRED_COMMENT_FIELDS)],
       async (req, res) => {
-        const {article: {id}} = res.locals;
-        const {text} = req.body;
-        const comment = await commentService.create(id, text);
+        const {articleId} = req.params;
+        const {fullText} = req.body;
+
+
+        const comment = await commentService.create(articleId, {fullText, userId: 1});
 
         return res.status(HttpCode.OK)
       .json(comment);
@@ -80,10 +86,9 @@ export default (app, articleService, commentService) => {
   route.put(`/:articleId`,
       [articleExist(articleService), requiredFieldsValidation(REQUIRED_ARTICLE_FIELDS)],
       async (req, res) => {
-        const {article: {id}} = res.locals;
+        const {articleId} = req.params;
         const newArticle = req.body;
-
-        const changedArticle = await articleService.update(id, newArticle);
+        const changedArticle = await articleService.update(articleId, newArticle);
 
         return res.status(HttpCode.OK).json(changedArticle);
       }

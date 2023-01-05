@@ -8,7 +8,7 @@ export class CategoryService {
   }
 
   async findAll(withCount) {
-    if (withCount) {
+    if (withCount === `true`) {
       const categories = await this._Category.findAll({
         attributes: [
           `id`,

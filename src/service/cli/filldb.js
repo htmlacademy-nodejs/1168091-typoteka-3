@@ -50,7 +50,7 @@ const generateComments = (count, users, comments) => (
   ))
 );
 
-const getPictureFileName = (number) => `item${number.toString().padStart(2, 0)}.jpg`;
+const getPictureFileName = () => `item${getRandomInt(0, 2)}.jpg`;
 
 const generateArticles = (count, titles, sentences, categories, comments, users) => {
   if (count > MAX_COUNT) {

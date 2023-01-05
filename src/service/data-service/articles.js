@@ -1,5 +1,4 @@
 import Alias from "../models/alias.js";
-import {Sequelize} from "sequelize";
 
 export class ArticlesService {
   constructor(sequelize) {
@@ -34,14 +33,7 @@ export class ArticlesService {
           attributes: [
             `id`,
             `name`
-          ],
-          include: [{
-            model: this._ArticlesCategories,
-            as: Alias.ARTICLES_CATEGORIES,
-            attributes: [
-              [Sequelize.fn(`COUNT`, Sequelize.col(`CategoryId`)), `total`],
-            ]
-          }],
+          ]
         },
         {
           model: this._Comment,

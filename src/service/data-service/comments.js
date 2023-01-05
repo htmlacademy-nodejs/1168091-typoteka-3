@@ -32,5 +32,4 @@ export class CommentService {
     });
     return !!deletedRows;
   }
-
 }
