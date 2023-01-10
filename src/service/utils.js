@@ -57,5 +57,11 @@ const readContent = async (filePath) => {
   }
 };
 
+const asyncHandler = (fn) => (req, res, next) => {
+  return Promise
+    .resolve(fn(req, res, next))
+    .catch(next);
+};
 
-export {getRandomInt, shuffle, createRandomDate, getErrolList, readContent};
+
+export {getRandomInt, shuffle, createRandomDate, getErrolList, readContent, asyncHandler};
