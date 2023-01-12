@@ -2,10 +2,10 @@ import {Router} from 'express';
 import {getDefaultAPI} from '../api.js';
 import moment from 'moment';
 import {upload} from '../middlewares/uploader.js';
-import {asyncHandler} from '../utils.js';
+import {asyncHandler, getPageSettings} from '../utils.js';
+import {ARTICLES_PER_PAGE, DATE_FORMAT} from '../const.js';
 
 const api = getDefaultAPI();
-
 
 const router = new Router();
 
@@ -26,11 +26,11 @@ const getArticle = async (id) => {
     count: newCategories[el.id]
   }));
 
-  article.date = moment(article.createdAt).format(`DD-MM-YYYY`);
+  article.date = moment(article.createdAt).format(DATE_FORMAT);
 
   article.comments = article.comments.map((el) => ({
     ...el,
-    date: moment(el.createdAt).format(`DD-MM-YYYY`)
+    date: moment(el.createdAt).format(DATE_FORMAT)
   }));
 
   return article;
@@ -38,16 +38,20 @@ const getArticle = async (id) => {
 
 router.get(`/`, asyncHandler(
     async (req, res) => {
-      const [articles, categories] = await Promise.all([
-        api.getArticles({comments: true}),
+      const {page, limit, offset} = getPageSettings(req);
+
+      const [{articles, count}, categories] = await Promise.all([
+        api.getArticles({comments: true, limit, offset}),
         api.getCategories({withCount: true})
       ]);
 
       articles.forEach((article) => {
-        article.date = moment(article.createdAt).format(`DD-MM-YYYY`);
+        article.date = moment(article.createdAt).format(DATE_FORMAT);
       });
 
-      res.render(`articles`, {articles, categories});
+      const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
+
+      res.render(`articles`, {articles, categories, totalPages, page});
     }
 ));
 

@@ -1,6 +1,8 @@
 import {Router} from 'express';
 import {getDefaultAPI} from '../api.js';
-import {asyncHandler} from '../utils.js';
+import {asyncHandler, getPageSettings} from '../utils.js';
+import {ARTICLES_PER_PAGE, DATE_FORMAT} from '../const.js';
+import moment from 'moment';
 
 const router = new Router();
 const api = getDefaultAPI();
@@ -8,11 +10,19 @@ const api = getDefaultAPI();
 
 router.get(`/`, asyncHandler(
     async (req, res) => {
-      const [articles, categories] = await Promise.all([
-        api.getArticles({comments: true}),
+      const {page, limit, offset} = getPageSettings(req);
+      const [{articles, count}, categories] = await Promise.all([
+        api.getArticles({comments: true, limit, offset}),
         api.getCategories({withCount: true})
       ]);
-      res.render(`main`, {articles, categories});
+
+      const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
+
+      articles.forEach((article) => {
+        article.date = moment(article.createdAt).format(DATE_FORMAT);
+      });
+
+      res.render(`main`, {articles, categories, totalPages, page});
     }
 ));
 

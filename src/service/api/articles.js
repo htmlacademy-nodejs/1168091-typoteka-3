@@ -14,11 +14,17 @@ export default (app, articleService, commentService) => {
 
   route.get(`/`, asyncHandler(
       async (req, res) => {
-        const {comments} = req.query;
-        const articles = await articleService.findAll(comments);
+        const {offset, limit, comments} = req.query;
 
+        let result;
+
+        if (limit || offset) {
+          result = await articleService.findPage({offset, limit});
+        } else {
+          result = await articleService.findAll(comments);
+        }
         res.status(HttpCode.OK)
-        .json(articles);
+        .json(result);
       }
   ));
 

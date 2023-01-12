@@ -9,6 +9,19 @@ export class ArticlesService {
     this._ArticlesCategories = sequelize.models.ArticlesCategories;
   }
 
+  async findPage({limit, offset}) {
+    const {count, rows} = await this._Article.findAndCountAll({
+      limit,
+      offset,
+      include: [Alias.CATEGORIES, Alias.COMMENTS],
+      order: [
+        [`createdAt`, `DESC`]
+      ],
+      distinct: true
+    });
+    return {count, articles: rows};
+  }
+
   async create(article) {
     const newArticle = await this._Article.create(article);
     await newArticle.addCategories(article.categories);

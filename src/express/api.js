@@ -25,9 +25,9 @@ class API {
     return response.data;
   }
 
-  async getArticles({comments, categoryId}) {
+  async getArticles({comments, categoryId, limit, offset}) {
   // async getArticles({comments = false, categoryId}) {  TODO: по чему не работает параметр по умолчанию?
-    return await this._load(Path.ARTICLES, {params: {comments, categoryId}});
+    return await this._load(Path.ARTICLES, {params: {comments, categoryId, limit, offset}});
   }
 
   async getOneArticle(articleId) {
