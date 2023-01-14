@@ -7,9 +7,10 @@ import {asyncHandler} from "../utils.js";
 const REQUIRED_ARTICLE_FIELDS = [`title`, `announce`, `fullText`, `categories`, `picture`, `createdDate`];
 const REQUIRED_COMMENT_FIELDS = [`fullText`];
 
-const route = new Router();
 
 export default (app, articleService, commentService) => {
+  const route = new Router();
+
   app.use(`/articles`, route);
 
   route.get(`/`, asyncHandler(

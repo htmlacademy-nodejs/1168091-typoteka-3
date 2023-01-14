@@ -2,18 +2,26 @@ import {Router} from "express";
 import {HttpCode} from "../const.js";
 import {asyncHandler} from "../utils.js";
 
-const route = new Router();
 
 export default (app, service) => {
+  const route = new Router();
+
   app.use(`/categories`, route);
 
   route.get(`/`, asyncHandler(
       async (req, res) => {
-        const {withCount} = req.query;
+        const {withCount, offset, limit} = req.query;
 
-        const categories = await service.findAll(withCount);
+        let result;
+
+        if (limit || offset) {
+          result = await service.findPage({offset, limit});
+        } else {
+          result = await service.findAll(withCount);
+        }
+
         res.status(HttpCode.OK)
-        .json(categories);
+        .json(result);
       }
   ));
 };

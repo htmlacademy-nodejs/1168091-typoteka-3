@@ -43,8 +43,10 @@ router.get(`/search`, asyncHandler(
 ));
 router.get(`/categories`, asyncHandler(
     async (req, res) => {
-      const categories = await api.getCategories({withCount: false});
-      res.render(`categories`, {categories});
+      const {page, limit, offset} = getPageSettings(req);
+      const {categories, count} = await api.getCategories({withCount: false, limit, offset});
+      const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
+      res.render(`categories`, {categories, totalPages, page});
     }
 ));
 

@@ -7,6 +7,19 @@ export class CategoryService {
     this._ArticlesCategories = sequelize.models.ArticlesCategories;
   }
 
+  async findPage({limit, offset}) {
+    const {count, rows} = await this._Category.findAndCountAll({
+      limit,
+      offset,
+      attributes: [`id`, `name`],
+      order: [
+        [`createdAt`, `DESC`]
+      ],
+      distinct: true
+    });
+    return {count, categories: rows};
+  }
+
   async findAll(withCount) {
     if (withCount === `true`) {
       const categories = await this._Category.findAll({

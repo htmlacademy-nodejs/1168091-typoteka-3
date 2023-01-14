@@ -73,8 +73,8 @@ class API {
     });
   }
 
-  async getCategories({withCount}) {
-    return await this._load(Path.CATEGORIES, {params: {withCount}});
+  async getCategories({withCount, limit, offset}) {
+    return await this._load(Path.CATEGORIES, {params: {withCount, limit, offset}});
   }
 
   async search(query) {
