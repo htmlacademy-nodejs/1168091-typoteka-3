@@ -24,6 +24,7 @@ block content
                 .form__field
                   label
                     input(type='text' name='title' placeholder='Заголовок' value=dataForm.title)
+                +insertSingleFieldError(validateMessagesWithFields, 'title')
                 .form__field.form__field--post-image
                   label
                     input#image-name-field(type='text' name='photo' value=dataForm.photo placeholder='Фотография' readonly='')
@@ -39,10 +40,14 @@ block content
                       input(type='checkbox' name='category' id=category.id value=category.id checked=!!dataForm.categories.find((el) => +el === category.id))
                       label(for=category.id) #{category.name}
                   a.new-publication__form-link.button.button--transparent(href='/categories') Добавить категорию
+                +insertSingleFieldError(validateMessagesWithFields, 'categories')
               .form__wrapper.form__wrapper--text
                 .form__field.form__field--publication-text
                   label
                     textarea(rows='5' name='announce' placeholder='Анонс публикации') #{dataForm.announce}
+                +insertSingleFieldError(validateMessagesWithFields, 'announce')
                 .form__field.form__field--publication-text
                   label
                     textarea(rows='10' name='full-text' placeholder='Полный текст публикации') #{dataForm.fullText}
+                +insertSingleFieldError(validateMessagesWithFields, 'fullText')
+          +insertErrorMessage(validationMessages)

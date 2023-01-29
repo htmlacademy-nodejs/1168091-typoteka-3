@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import fs from "fs/promises";
-import {getRandomInt, shuffle, readContent} from "../utils.js";
+import {getRandomInt, shuffle, readContent} from "../../utils.js";
 
 import {
   DEFAULT_COUNT,
@@ -10,7 +10,7 @@ import {
   FILE_COMMENTS_PATH,
   MAX_COMMENTS_IN_POST,
   UserRole
-} from "../const.js";
+} from "../../const.js";
 
 const FILE_NAME = `./fill-db.sql`;
 

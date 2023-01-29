@@ -3,8 +3,7 @@ import express from "express";
 import request from "supertest";
 import search from "./search.js";
 import {SearchService} from "../data-service";
-import {HttpCode} from "../const.js";
-import {testMockData, mockCategories, mockUsers} from "../const.js";
+import {testMockData, mockCategories, mockUsers, HttpCode} from "../../const.js";
 import initDb from "../lib/init-db.js";
 
 const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});

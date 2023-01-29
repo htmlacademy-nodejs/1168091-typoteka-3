@@ -80,6 +80,31 @@ class API {
   async search(query) {
     return await this._load(Path.SEARCH, {params: {query}});
   }
+
+  async createCategory(data) {
+    return await this._load(Path.CATEGORIES, {
+      method: `POST`,
+      data
+    });
+  }
+
+  async deleteCategory(id) {
+    return await this._load(Path.CATEGORIES, {
+      method: `DELETE`,
+      data: {
+        id
+      }
+    });
+  }
+
+  async updateCategory(id, name) {
+    return await this._load(`${Path.CATEGORIES}/${id}`, {
+      method: `PUT`,
+      data: {
+        name
+      }
+    });
+  }
 }
 
 export {

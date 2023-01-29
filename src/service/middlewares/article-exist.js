@@ -1,4 +1,4 @@
-import {HttpCode} from "../const.js";
+import {HttpCode} from "../../const.js";
 
 export default (service) => async (req, res, next) => {
   const {articleId} = req.params;

@@ -1,6 +1,6 @@
 import {Router} from "express";
-import {HttpCode} from "../const.js";
-import {asyncHandler} from "../utils.js";
+import {HttpCode} from "../../const.js";
+import {asyncHandler} from "../../utils.js";
 
 export default (app, searchService) => {
   const route = new Router();

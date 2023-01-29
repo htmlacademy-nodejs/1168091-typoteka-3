@@ -9,6 +9,25 @@ head
   link(rel='preload' href='/fonts/Inter-Medium.woff2' as='font' crossorigin='anonymous')
   link(rel='preload' href='/fonts/SFProDisplay-Regular.woff2' as='font' crossorigin='anonymous')
   link(rel='stylesheet' href='/css/style.min.css')
+  style.
+    .server-errors{
+      padding-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .server-error{
+      border-radius: 10px;
+      color: tomato;
+      border: 1px solid tomato;
+      background-color: transparent;
+      padding: 5px;
+    }
+    .single-server-error{
+      color: tomato;
+      font-size: 12px;
+      margin: 5px 0;
+    }
 body
   mixin pagination(page, totalPages, prefix)
     -
@@ -26,6 +45,19 @@ body
               a(href=`${prefix}page=${i}`)= i
         li
           a.pagination__button.button.button--forward(class= (page >= totalPages) ? 'button--disabled' : '' href=`${prefix}page=${page + 1}` aria-label='Страница вперед') Вперед
+
+  mixin insertSingleFieldError(errors, fieldName)
+    -
+      const error = errors.find((el) => el.fieldName === fieldName)
+
+    if error
+      p.single-server-error= error.error
+
+  mixin insertErrorMessage(messages)
+    if messages
+      .server-errors
+        each message of messages
+          .server-error= message
 
   .wrapper
     include partials/header.pug

@@ -2,7 +2,7 @@ import {article} from "./article.js";
 import {category} from "./category.js";
 import {comment} from "./comment.js";
 import {user} from "./user.js";
-import {articlesCategories} from "./articlesCAtegories.js";
+import {articlesCategories} from "./articles-categories.js";
 
 import Alias from "./alias.js";
 

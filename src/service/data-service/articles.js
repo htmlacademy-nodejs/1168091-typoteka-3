@@ -9,11 +9,26 @@ export class ArticlesService {
     this._ArticlesCategories = sequelize.models.ArticlesCategories;
   }
 
-  async findPage({limit, offset}) {
+  async findPage({limit, offset, categoryId}) {
+
+    const categoryIncludeOptions = {
+      model: this._Category,
+      as: Alias.CATEGORIES
+    };
+
+    if (categoryId) {
+      categoryIncludeOptions.where = {
+        id: categoryId
+      };
+    }
+
     const {count, rows} = await this._Article.findAndCountAll({
       limit,
       offset,
-      include: [Alias.CATEGORIES, Alias.COMMENTS],
+      include: [
+        Alias.COMMENTS,
+        categoryIncludeOptions
+      ],
       order: [
         [`createdAt`, `DESC`]
       ],

@@ -46,4 +46,45 @@ export class CategoryService {
       return await this._Category.findAll({raw: true});
     }
   }
+
+  async create(category) {
+    const existedCategory = await this._Category.findOne({where: {name: category.name}});
+
+    if (existedCategory === null) {
+      const newCategory = await this._Category.create(category);
+      return newCategory.get();
+    } else {
+      return null;
+    }
+  }
+
+  async delete(id) {
+    const articlesId = await this._ArticlesCategories.findAll({where: {
+      CategoryId: id
+    }});
+
+    if (!articlesId.length) {
+      const deleteRows = await this._Category.destroy({
+        where: {id}
+      });
+
+      return !!deleteRows;
+    } else {
+      return false;
+    }
+  }
+
+  async update(id, name) {
+    const existedCategory = await this._Category.findOne({where: {name}});
+
+    if (existedCategory === null) {
+      const [affectedRows] = await this._Category.update({name}, {
+        where: {id}
+      });
+
+      return !!affectedRows;
+    } else {
+      return null;
+    }
+  }
 }

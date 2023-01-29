@@ -5,18 +5,27 @@ block content
     section.main-page__category.category
       h1.category__title Категории
       .category__add-form
-        form(action='#' method='POST')
-          input#add-form-add-category(type='text' name='add-category' placeholder='Новая категория')
+        form(action='/categories' method='POST')
+          input#add-form-add-category(type='text' name='name' value=name || '' placeholder='Новая категория')
           label(for='add-form-add-category')
             span.visually-hidden Добавить категорию
           button.category__button.button.button--category(type='submit') Добавить
+        +insertErrorMessage(validationMessages)
       ul.category__list
         each category in categories
-          li.category__list-item
-            form(action='#' method='POST')
-              input#modify-form-category-1(type='text' name='category-1' value=category.name)
-              label(for='modify-form-category-1')
-                span.visually-hidden Редактировать категорию
-              button.category__button.button.button--category(type='submit') Сохранить
-              button.category__button.button.button--category(type='button') Удалить
+          li.category__list-item(style="flex-wrap: wrap;")
+            div(style="display: flex; width: 100%")
+              form(action='/categories/' method='POST')
+                input(id='modify-form-category-' + category.id type='text' name='name' value=category.name)
+                input(type='hidden' name='id' value=category.id)
+                input(type='hidden' name='_method' value='PUT')
+                label(for='modify-form-category-' + category.id)
+                  span.visually-hidden Редактировать категорию
+                button.category__button.button.button--category(type='submit') Сохранить
+              form(action='/categories/' method='POST' style="width: auto")
+                input(type='hidden' name='id' value=category.id)
+                input(type='hidden' name='_method' value='DELETE')
+                button.category__button.button.button--category(type='submit') Удалить
+            if validateMessagesWithFields
+              +insertSingleFieldError(validateMessagesWithFields, `${category.id}`)
     +pagination(page, totalPages, `?`)

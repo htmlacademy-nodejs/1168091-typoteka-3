@@ -2,8 +2,8 @@ import {Router} from 'express';
 import {getDefaultAPI} from '../api.js';
 import moment from 'moment';
 import {upload} from '../middlewares/uploader.js';
-import {asyncHandler, getPageSettings} from '../utils.js';
-import {ARTICLES_PER_PAGE, DATE_FORMAT} from '../const.js';
+import {asyncHandler, getPageSettings, prepareErrors, prepareErrorsWithFields} from '../../utils.js';
+import {ARTICLES_PER_PAGE, DATE_FORMAT} from '../../const.js';
 
 const api = getDefaultAPI();
 
@@ -59,12 +59,16 @@ router.get(`/category/:id`, asyncHandler(
     async (req, res) => {
       const {id} = req.params;
 
-      const [articles, categories] = await Promise.all([
-        api.getArticles({comments: true, categoryId: id}),
+      const {page, limit, offset} = getPageSettings(req);
+
+      const [{articles, count}, categories] = await Promise.all([
+        api.getArticles({comments: true, categoryId: id, limit, offset}),
         api.getCategories({withCount: true})
       ]);
 
-      res.render(`articles`, {articles, categories});
+      const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
+
+      res.render(`articles`, {articles, categories, totalPages, page});
     }
 ));
 
@@ -154,23 +158,26 @@ router.post(`/add`,
             announce: body[`announce`],
             fullText: body[`full-text`],
             picture: file ? file.filename : null,
-            createdDate: body[`date`]
+            createdDate: body[`date`],
+            userId: 1
           };
 
           try {
-            console.log(`DataForm`, dataForm);
             await api.createArticle(dataForm);
             res.redirect(`/my`);
 
-          } catch (e) {
-            console.log(`Error:`, e);
+          } catch (errors) {
+            const validationMessages = prepareErrors(errors);
+            const validateMessagesWithFields = prepareErrorsWithFields(errors);
             const categories = await api.getCategories({withCount: false});
 
             res.render(`add-post`,
                 {
                   dataForm,
                   categories,
-                  dateNowISO: dataForm.createdDate
+                  dateNowISO: dataForm.createdDate,
+                  validationMessages,
+                  validateMessagesWithFields
                 });
           }
         }
@@ -191,7 +198,8 @@ router.post(`/edit/:id`,
             announce: body[`announce`],
             fullText: body[`full-text`],
             picture: file ? file.filename : currentPictureName,
-            createdDate: body[`date`]
+            createdDate: body[`date`],
+            userId: 1
           };
 
           try {
@@ -201,14 +209,18 @@ router.post(`/edit/:id`,
             await api.updateArticle(id, data);
 
             res.redirect(`/my`);
-          } catch (e) {
-            console.log(`Error:`, e);
+          } catch (errors) {
+            console.log(`Error:`, errors);
+            const validationMessages = prepareErrors(errors);
+            const validateMessagesWithFields = prepareErrorsWithFields(errors);
             const categories = await api.getCategories({withCount: false});
 
             res.render(`add-post`, {
               dataForm,
               dateNowISO: dataForm.createdDate,
-              categories
+              categories,
+              validationMessages,
+              validateMessagesWithFields
             });
           }
         }
@@ -217,15 +229,24 @@ router.post(`/edit/:id`,
 router.post(`/:id`, asyncHandler(
     async ({body, params: {id}}, res) => {
 
-      const newComment = {fullText: body.message};
+      const newComment = {
+        fullText: body.fullText,
+        userId: 2
+      };
 
       try {
         await api.createComment(id, newComment);
+        res.redirect(`/articles/${id}`);
+      } catch (errors) {
+        const validationMessages = prepareErrors(errors);
+
         const article = await getArticle(id);
 
-        res.render(`article`, {article});
-      } catch (e) {
-        console.log(`Error`, e);
+        res.render(`article`, {
+          article,
+          validationMessages,
+          fullText: newComment.fullText
+        });
       }
     }
 ));

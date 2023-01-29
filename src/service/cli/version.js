@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import fs from "fs/promises";
-import {PACKAGE_JSON_PATH} from "../const.js";
+import {PACKAGE_JSON_PATH} from "../../const.js";
 
 export default {
   name: `--version`,

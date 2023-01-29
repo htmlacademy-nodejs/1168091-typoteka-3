@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import {getDefaultAPI} from '../api.js';
-import {asyncHandler, getPageSettings} from '../utils.js';
-import {ARTICLES_PER_PAGE, DATE_FORMAT} from '../const.js';
+import {asyncHandler, getPageSettings, prepareErrors, prepareErrorsWithFields} from '../../utils.js';
+import {ARTICLES_PER_PAGE, DATE_FORMAT} from '../../const.js';
 import moment from 'moment';
 
 const router = new Router();
@@ -41,12 +41,67 @@ router.get(`/search`, asyncHandler(
       }
     }
 ));
+
 router.get(`/categories`, asyncHandler(
     async (req, res) => {
       const {page, limit, offset} = getPageSettings(req);
       const {categories, count} = await api.getCategories({withCount: false, limit, offset});
       const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
       res.render(`categories`, {categories, totalPages, page});
+    }
+));
+
+router.post(`/categories`, asyncHandler(
+    async (req, res) => {
+      const newCategory = {
+        name: req.body.name
+      };
+
+      try {
+        await api.createCategory(newCategory);
+        res.redirect(`/categories`);
+      } catch (errors) {
+        const validationMessages = prepareErrors(errors);
+        const {page, limit, offset} = getPageSettings(req);
+        const {categories, count} = await api.getCategories({withCount: false, limit, offset});
+        const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
+        res.render(`categories`, {categories, totalPages, page, validationMessages, name: req.body.name});
+      }
+
+    }
+));
+
+router.delete(`/categories`, asyncHandler(
+    async (req, res) => {
+      const {id} = req.body;
+
+      try {
+        await api.deleteCategory(id);
+        res.redirect(`/categories`);
+      } catch (errors) {
+        const validateMessagesWithFields = prepareErrorsWithFields(errors);
+        const {page, limit, offset} = getPageSettings(req);
+        const {categories, count} = await api.getCategories({withCount: false, limit, offset});
+        const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
+        res.render(`categories`, {categories, totalPages, page, validateMessagesWithFields});
+      }
+    }
+));
+
+router.put(`/categories`, asyncHandler(
+    async (req, res) => {
+      const {id, name} = req.body;
+
+      try {
+        await api.updateCategory(id, name);
+        res.redirect(`/categories`);
+      } catch (errors) {
+        const validateMessagesWithFields = prepareErrorsWithFields(errors);
+        const {page, limit, offset} = getPageSettings(req);
+        const {categories, count} = await api.getCategories({withCount: false, limit, offset});
+        const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
+        res.render(`categories`, {categories, totalPages, page, validateMessagesWithFields});
+      }
     }
 ));
 

@@ -4,9 +4,8 @@ import request from "supertest";
 import {ArticlesService} from "../data-service/articles.js";
 import {CommentService} from "../data-service/comments.js";
 import articles from "./articles";
-import {HttpCode} from "../const.js";
 
-import {testMockData, mockCategories, mockUsers} from "../const.js";
+import {testMockData, mockCategories, mockUsers, HttpCode} from "../../const.js";
 import initDb from "../lib/init-db.js";
 
 const FIRST_ARTICLE_ID = 1;
@@ -108,12 +107,13 @@ describe(`API refuses to create an article if data is invalid`, () => {
 
 describe(`API changes existent article`, () => {
   const changedArticle = {
-    title: `New title`,
-    announce: `New announce`,
-    fullText: `New full text`,
+    title: `New title2 New title2 New title2 New title2`,
+    announce: `New announce New announce New announce New announce New announce New announce New announceNew announce`,
+    fullText: `New full text New full text New full text New full text New full text New full text New full text New full text New full text New full text New full text New full text`,
     categories: [`1`],
     picture: `lamp.jpg`,
-    createdDate: `2023-01-05T10:07:20.455Z`
+    createdDate: `2023-01-05T10:07:20.455Z`,
+    userId: 1
   };
 
   let api;
@@ -126,17 +126,19 @@ describe(`API changes existent article`, () => {
       .send(changedArticle);
   });
 
+
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
 
-  test(`Offer is really changed`, () => request(api)
+  test(`Article is really changed`, () => request(api)
     .get(`/articles/${FIRST_ARTICLE_ID}`)
-    .expect((res) => expect(res.body.title).toBe(`New title`))
+    .expect((res) => expect(res.body.title).toBe(changedArticle.title))
   );
 });
 
 describe(`API add's new comment`, () => {
   const newComment = {
-    fullText: `New comment`
+    fullText: `New comment New comment New comment New comment New comment`,
+    userId: 2
   };
 
   let response;
@@ -159,7 +161,7 @@ describe(`API add's new comment`, () => {
     response = await request(api).get(`/articles/${FIRST_ARTICLE_ID}/comments`);
   });
 
-  test(`Returns a list of 5 offers`, () => expect(response.body.length).toBe(commentsCount + 1));
+  test(`Returns a list of +1 comments`, () => expect(response.body.length).toBe(commentsCount + 1));
 });
 
 test(`API doesn't change defunct article`, async () => {
@@ -200,14 +202,14 @@ test(`API refuses to delete non-existent article`, async () => {
 
 describe(`API creates an article if data is valid`, () => {
   const newArticle = {
-    title: `New title`,
-    announce: `New announce`,
-    fullText: `New full text`,
+    title: `New title2 New title2 New title2 New title2`,
+    announce: `New announce New announce New announce New announce New announce New announce New announceNew announce`,
+    fullText: `New full text New full text New full text New full text New full text New full text New full text New full text New full text New full text New full text New full text`,
     categories: [`1`],
     picture: `lamp.jpg`,
-    createdDate: `2023-01-05T10:07:20.455Z`
+    createdDate: `2023-01-05T10:07:20.455Z`,
+    userId: 1
   };
-
   let api;
   let response;
 
@@ -240,7 +242,7 @@ describe(`API correctly deletes an article`, () => {
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
 
-  test(`Returns deleted article`, () => expect(response.body.id).toBe(FIRST_ARTICLE_ID));
+  test(`Returns status: true`, () => expect(response.body.status).toBe(true));
 
   test(`Articles count is 4 now`, () => request(api)
     .get(`/articles`)
@@ -249,3 +251,53 @@ describe(`API correctly deletes an article`, () => {
     })
   );
 });
+
+describe(`Bad params if create new article`, () => {
+  let api;
+  const newArticle = {
+    title: `New title2 New title2 New title2 New title2`,
+    announce: `New announce New announce New announce New announce New announce New announce New announceNew announce`,
+    fullText: `New full text New full text New full text New full text New full text New full text New full text New full text New full text New full text New full text New full text`,
+    categories: [`1`],
+    picture: `lamp.jpg`,
+    createdDate: `2023-01-05T10:07:20.455Z`,
+    userId: 1
+  };
+
+  beforeAll(async () => {
+    api = await createAPI();
+  });
+
+  test(`When field type is wrong response code is 400`, async () => {
+
+    const badOffers = [
+      {...newArticle, title: true},
+      {...newArticle, picture: 12345},
+      {...newArticle, categories: `Котики`}
+    ];
+
+    for (const badOffer of badOffers) {
+      await request(api)
+      .post(`/articles`)
+      .send(badOffer)
+      .expect(HttpCode.BAD_REQUEST);
+    }
+  });
+
+  test(`When field value is wrong response code is 400`, async () => {
+    const badOffers = [
+      {...newArticle, title: `short`},
+      {...newArticle, picture: 123},
+      {...newArticle, categories: []}
+    ];
+    for (const badOffer of badOffers) {
+      await request(api)
+        .post(`/articles`)
+        .send(badOffer)
+        .expect(HttpCode.BAD_REQUEST);
+    }
+  });
+
+});
+
+

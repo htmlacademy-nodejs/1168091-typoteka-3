@@ -1,8 +1,8 @@
 import {Router} from 'express';
 import {getDefaultAPI} from '../api.js';
 import moment from 'moment';
-import {asyncHandler, getPageSettings} from '../utils.js';
-import {ARTICLES_PER_PAGE, DATE_FORMAT} from '../const.js';
+import {asyncHandler, getPageSettings} from '../../utils.js';
+import {ARTICLES_PER_PAGE, DATE_FORMAT} from '../../const.js';
 
 const api = getDefaultAPI();
 const router = new Router();

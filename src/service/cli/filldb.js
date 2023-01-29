@@ -1,7 +1,7 @@
 
 import chalk from "chalk";
 
-import {getRandomInt, shuffle, readContent} from "../utils.js";
+import {getRandomInt, shuffle, readContent} from "../../utils.js";
 import {
   MAX_COUNT,
   DEFAULT_COUNT,
@@ -12,7 +12,7 @@ import {
   FILE_COMMENTS_PATH,
   MAX_COMMENTS_IN_POST,
   mockUsers
-} from "../const.js";
+} from "../../const.js";
 
 import {sequelize} from "../lib/sequelize.js";
 

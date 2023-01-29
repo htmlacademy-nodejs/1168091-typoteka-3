@@ -9,6 +9,9 @@ const FILE_CATEGORIES_PATH = `./data/categories.txt`;
 const FILE_COMMENTS_PATH = `./data/comments.txt`;
 const MAX_ID_LENGTH = 6;
 
+const ARTICLES_PER_PAGE = 8;
+const DATE_FORMAT = `DD-MM-YYYY`;
+
 const HELP_MESSAGE = `Программа запускает http-сервер и формирует файл с данными для API.
 
     Гайд:
@@ -165,5 +168,7 @@ export {
   mockCategories,
   mockUsers,
   UserRole,
-  Env
+  Env,
+  ARTICLES_PER_PAGE,
+  DATE_FORMAT
 };
