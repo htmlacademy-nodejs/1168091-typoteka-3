@@ -4,6 +4,7 @@ const Path = {
   ARTICLES: `/articles`,
   CATEGORIES: `/categories`,
   SEARCH: `/search`,
+  USER: `/user`
 };
 
 const TIMEOUT = 1000;
@@ -23,6 +24,14 @@ class API {
   async _load(url, options) {
     const response = await this._http.request({url, ...options});
     return response.data;
+  }
+
+  async createUser(data) {
+    const res = await this._load(`${Path.USER}`, {
+      method: `POST`,
+      data,
+    });
+    return res;
   }
 
   async getArticles({comments, categoryId, limit, offset}) {

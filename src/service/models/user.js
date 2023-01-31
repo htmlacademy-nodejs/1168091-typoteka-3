@@ -1,4 +1,5 @@
 import {DataTypes, Model} from "sequelize";
+import {UserRole} from "../../const.js";
 
 class User extends Model {}
 
@@ -23,11 +24,11 @@ export const user = (sequelize) => User.init(
       },
       avatar: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       role: {
         type: DataTypes.ENUM,
-        values: [`guest`, `author`, `reader`]
+        values: [UserRole.AUTHOR, UserRole.READER]
       }
     }, {
       sequelize,

@@ -47,7 +47,6 @@ const Env = {
 };
 
 const UserRole = {
-  GUEST: `guest`,
   AUTHOR: `author`,
   READER: `reader`
 };
@@ -79,7 +78,7 @@ const mockUsers = [
     firstName: `Пётр`,
     lastName: `Петров`,
     avatar: `avatar-2.png`,
-    role: UserRole.GUEST
+    role: UserRole.READER
   },
   {
     email: `sidorov@example.com`,

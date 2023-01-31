@@ -3,6 +3,7 @@ import {getDefaultAPI} from '../api.js';
 import {asyncHandler, getPageSettings, prepareErrors, prepareErrorsWithFields} from '../../utils.js';
 import {ARTICLES_PER_PAGE, DATE_FORMAT} from '../../const.js';
 import moment from 'moment';
+import {upload} from '../middlewares/uploader.js';
 
 const router = new Router();
 const api = getDefaultAPI();
@@ -27,6 +28,29 @@ router.get(`/`, asyncHandler(
 ));
 
 router.get(`/register`, (req, res) => res.render(`registration`));
+
+router.post(`/register`,
+    upload.single(`avatar`),
+    asyncHandler(
+        async ({body, file}, res) => {
+          const dataForm = {
+            email: body[`email`],
+            firstName: body[`first-name`],
+            lastName: body[`last-name`],
+            password: body[`password`],
+            passwordRepeated: body[`password-repeated`],
+            avatar: file ? file.filename : ``
+          };
+
+          try {
+            await api.createUser(dataForm);
+            res.redirect(`/login`);
+          } catch (errors) {
+            const validationMessages = prepareErrors(errors);
+            res.render(`registration`, {dataForm, validationMessages});
+          }
+        }
+    ));
 
 router.get(`/login`, (req, res) => res.render(`login`));
 
