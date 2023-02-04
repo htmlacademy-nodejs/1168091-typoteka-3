@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import {getDefaultAPI} from '../api.js';
-import {asyncHandler, getPageSettings, prepareErrors, prepareErrorsWithFields} from '../../utils.js';
+import {asyncHandler, getPageSettings, prepareErrors} from '../../utils.js';
 import {ARTICLES_PER_PAGE, DATE_FORMAT} from '../../const.js';
 import moment from 'moment';
 import {upload} from '../middlewares/uploader.js';
@@ -11,6 +11,7 @@ const api = getDefaultAPI();
 
 router.get(`/`, asyncHandler(
     async (req, res) => {
+      const {user} = req.session;
       const {page, limit, offset} = getPageSettings(req);
       const [{articles, count}, categories] = await Promise.all([
         api.getArticles({comments: true, limit, offset}),
@@ -23,7 +24,7 @@ router.get(`/`, asyncHandler(
         article.date = moment(article.createdAt).format(DATE_FORMAT);
       });
 
-      res.render(`main`, {articles, categories, totalPages, page});
+      res.render(`main`, {articles, categories, totalPages, page, user});
     }
 ));
 
@@ -54,79 +55,43 @@ router.post(`/register`,
 
 router.get(`/login`, (req, res) => res.render(`login`));
 
+router.get(`/logout`, (req, res) => {
+  delete req.session.user;
+  res.redirect(`/`);
+});
+
+router.post(`/login`, asyncHandler(
+    async (req, res) => {
+      const {email, password} = req.body;
+
+      try {
+        const user = await api.auth(email, password);
+        req.session.user = user;
+        req.session.save(() => {
+          res.redirect(`/`);
+        });
+
+      } catch (errors) {
+        const validationMessages = prepareErrors(errors);
+        const {user} = req.session;
+        res.render(`login`, {user, validationMessages});
+      }
+    }
+));
+
 router.get(`/search`, asyncHandler(
     async (req, res) => {
       const {search} = req.query;
+      const {user} = req.session;
       try {
         const result = await api.search(search);
-        res.render(`search`, {result, search});
+        res.render(`search`, {result, search, user});
       } catch (e) {
-        res.render(`search`, {result: [], search});
+        res.render(`search`, {result: [], search, user});
       }
     }
 ));
 
-router.get(`/categories`, asyncHandler(
-    async (req, res) => {
-      const {page, limit, offset} = getPageSettings(req);
-      const {categories, count} = await api.getCategories({withCount: false, limit, offset});
-      const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
-      res.render(`categories`, {categories, totalPages, page});
-    }
-));
-
-router.post(`/categories`, asyncHandler(
-    async (req, res) => {
-      const newCategory = {
-        name: req.body.name
-      };
-
-      try {
-        await api.createCategory(newCategory);
-        res.redirect(`/categories`);
-      } catch (errors) {
-        const validationMessages = prepareErrors(errors);
-        const {page, limit, offset} = getPageSettings(req);
-        const {categories, count} = await api.getCategories({withCount: false, limit, offset});
-        const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
-        res.render(`categories`, {categories, totalPages, page, validationMessages, name: req.body.name});
-      }
-
-    }
-));
-
-router.delete(`/categories`, asyncHandler(
-    async (req, res) => {
-      const {id} = req.body;
-
-      try {
-        await api.deleteCategory(id);
-        res.redirect(`/categories`);
-      } catch (errors) {
-        const validateMessagesWithFields = prepareErrorsWithFields(errors);
-        const {page, limit, offset} = getPageSettings(req);
-        const {categories, count} = await api.getCategories({withCount: false, limit, offset});
-        const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
-        res.render(`categories`, {categories, totalPages, page, validateMessagesWithFields});
-      }
-    }
-));
-
-router.put(`/categories`, asyncHandler(
-    async (req, res) => {
-      const {id, name} = req.body;
-
-      try {
-        await api.updateCategory(id, name);
-        res.redirect(`/categories`);
-      } catch (errors) {
-        const validateMessagesWithFields = prepareErrorsWithFields(errors);
-        const {page, limit, offset} = getPageSettings(req);
-        const {categories, count} = await api.getCategories({withCount: false, limit, offset});
-        const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
-        res.render(`categories`, {categories, totalPages, page, validateMessagesWithFields});
-      }
-    }
-));
+router.get(`/errors/404`, (req, res) => res.render(`errors/404`));
 
 export default router;

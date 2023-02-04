@@ -1,8 +1,12 @@
-import {hash, hashSync} from "bcrypt";
+import {hash as hashBcrypt, hashSync as hashSyncBcrypt, compare} from "bcrypt";
 
 const SALT_ROUNDS = 10;
 
-export default {
-  hash: (password) => hash(password, SALT_ROUNDS),
-  hashSync: (password) => hashSync(password, SALT_ROUNDS)
+const hash = (password) => hashBcrypt(password, SALT_ROUNDS);
+const hashSync = (password) => hashSyncBcrypt(password, SALT_ROUNDS);
+
+export {
+  hash,
+  hashSync,
+  compare
 };
