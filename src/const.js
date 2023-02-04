@@ -1,3 +1,5 @@
+import {hashSync} from "./service/lib/password.js";
+
 const DEFAULT_COUNT = 1;
 const DEFAULT_PORT = 3000;
 const MAX_COUNT = 1000;
@@ -66,7 +68,7 @@ const mockCategories = [
 const mockUsers = [
   {
     email: `ivanov@example.com`,
-    passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
+    passwordHash: hashSync(`ivanov`),
     firstName: `Иван`,
     lastName: `Иванов`,
     avatar: `avatar-1.png`,
@@ -74,7 +76,7 @@ const mockUsers = [
   },
   {
     email: `petrov@example.com`,
-    passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
+    passwordHash: hashSync(`petrov`),
     firstName: `Пётр`,
     lastName: `Петров`,
     avatar: `avatar-2.png`,
@@ -82,7 +84,7 @@ const mockUsers = [
   },
   {
     email: `sidorov@example.com`,
-    passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
+    passwordHash: hashSync(`sidorov`),
     firstName: `Сидр`,
     lastName: `Сидорович`,
     avatar: `avatar-3.png`,

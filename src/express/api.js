@@ -7,6 +7,13 @@ const Path = {
   USER: `/user`
 };
 
+const HttpMethod = {
+  POST: `POST`,
+  GET: `GET`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+};
+
 const TIMEOUT = 1000;
 
 const port = process.env.API_PORT || 3000;
@@ -26,9 +33,16 @@ class API {
     return response.data;
   }
 
+  auth(email, password) {
+    return this._load(`/user/auth`, {
+      method: HttpMethod.POST,
+      data: {email, password}
+    });
+  }
+
   async createUser(data) {
     const res = await this._load(`${Path.USER}`, {
-      method: `POST`,
+      method: HttpMethod.POST,
       data,
     });
     return res;
@@ -49,7 +63,7 @@ class API {
 
   async createArticle(data) {
     const res = await this._load(`${Path.ARTICLES}`, {
-      method: `POST`,
+      method: HttpMethod.POST,
       data,
     });
     return res;
@@ -57,27 +71,27 @@ class API {
 
   async createComment(articleId, data) {
     return await this._load(`${Path.ARTICLES}/${articleId}/comments`, {
-      method: `POST`,
+      method: HttpMethod.POST,
       data,
     });
   }
 
   async deleteArticle(articleId) {
     return await this._load(`${Path.ARTICLES}/${articleId}`, {
-      method: `DELETE`,
+      method: HttpMethod.DELETE,
     });
   }
 
   async deleteComment(articleId, commentId) {
     return await this._load(`${Path.ARTICLES}/${articleId}/comments/${commentId}`, {
-      method: `DELETE`,
+      method: HttpMethod.DELETE,
     }
     );
   }
 
   async updateArticle(articleId, data) {
     return await this._load(`${Path.ARTICLES}/${articleId}`, {
-      method: `PUT`,
+      method: HttpMethod.PUT,
       data,
     });
   }
@@ -92,14 +106,14 @@ class API {
 
   async createCategory(data) {
     return await this._load(Path.CATEGORIES, {
-      method: `POST`,
+      method: HttpMethod.POST,
       data
     });
   }
 
   async deleteCategory(id) {
     return await this._load(Path.CATEGORIES, {
-      method: `DELETE`,
+      method: HttpMethod.DELETE,
       data: {
         id
       }
@@ -108,7 +122,7 @@ class API {
 
   async updateCategory(id, name) {
     return await this._load(`${Path.CATEGORIES}/${id}`, {
-      method: `PUT`,
+      method: HttpMethod.PUT,
       data: {
         name
       }

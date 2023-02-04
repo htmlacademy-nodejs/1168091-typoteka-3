@@ -2,12 +2,17 @@ import {Router} from 'express';
 import {getDefaultAPI} from '../api.js';
 import moment from 'moment';
 import {upload} from '../middlewares/uploader.js';
+import csrf from 'csurf';
 import {asyncHandler, getPageSettings, prepareErrors, prepareErrorsWithFields} from '../../utils.js';
 import {ARTICLES_PER_PAGE, DATE_FORMAT} from '../../const.js';
+import author from '../middlewares/author.js';
+import auth from "../middlewares/auth.js";
 
 const api = getDefaultAPI();
 
 const router = new Router();
+
+const csrfProtection = csrf();
 
 const getArticle = async (id) => {
   const [article, categories] = await Promise.all([
@@ -38,6 +43,7 @@ const getArticle = async (id) => {
 
 router.get(`/`, asyncHandler(
     async (req, res) => {
+      const {user} = req.session;
       const {page, limit, offset} = getPageSettings(req);
 
       const [{articles, count}, categories] = await Promise.all([
@@ -51,13 +57,20 @@ router.get(`/`, asyncHandler(
 
       const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
 
-      res.render(`articles`, {articles, categories, totalPages, page});
+      res.render(`articles`, {
+        articles,
+        categories,
+        totalPages,
+        page,
+        user
+      });
     }
 ));
 
 router.get(`/category/:id`, asyncHandler(
     async (req, res) => {
       const {id} = req.params;
+      const {user} = req.session;
 
       const {page, limit, offset} = getPageSettings(req);
 
@@ -68,13 +81,14 @@ router.get(`/category/:id`, asyncHandler(
 
       const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
 
-      res.render(`articles`, {articles, categories, totalPages, page});
+      res.render(`articles`, {articles, categories, totalPages, page, user});
     }
 ));
 
-router.get(`/add`, asyncHandler(
+router.get(`/add`, author, csrfProtection, asyncHandler(
     async (req, res) => {
       try {
+        const {user} = req.session;
         const categories = await api.getCategories({withCount: false});
         const dateNowISO = moment(Date.now()).toISOString();
 
@@ -89,9 +103,11 @@ router.get(`/add`, asyncHandler(
         res.render(`add-post`, {
           dataForm,
           dateNowISO,
-          categories
+          categories,
+          user,
+          csrfToken: req.csrfToken()
         });
-      } catch ({response: {status}}) {
+      } catch ({response, response: {status}}) {
         if (status === 404 || status === 500) {
           res.render(`errors/${status}`);
         }
@@ -99,13 +115,13 @@ router.get(`/add`, asyncHandler(
     }
 ));
 
-router.get(`/:id`, asyncHandler(
+router.get(`/:id`, csrfProtection, asyncHandler(
     async (req, res) => {
       const {id} = req.params;
+      const {user} = req.session;
       try {
         const article = await getArticle(id);
-
-        res.render(`article`, {article});
+        res.render(`article`, {article, user, csrfToken: req.csrfToken()});
       } catch ({response: {status}}) {
         if (status === 404 || status === 500) {
           res.render(`errors/${status}`);
@@ -114,9 +130,10 @@ router.get(`/:id`, asyncHandler(
     }
 ));
 
-router.get(`/edit/:id`, asyncHandler(
+router.get(`/edit/:id`, author, asyncHandler(
     async (req, res) => {
       const {id} = req.params;
+      const {user} = req.session;
       try {
         const article = await api.getOneArticle(id);
         const categories = await api.getCategories({withCount: false});
@@ -135,7 +152,8 @@ router.get(`/edit/:id`, asyncHandler(
         res.render(`add-post`, {
           dataForm,
           dateNowISO,
-          categories
+          categories,
+          user
         });
 
       } catch ({response: {status}}) {
@@ -148,9 +166,14 @@ router.get(`/edit/:id`, asyncHandler(
 
 
 router.post(`/add`,
+    author,
     upload.single(`picture`),
+    csrfProtection,
     asyncHandler(
-        async ({body, file}, res) => {
+        async (req, res) => {
+
+          const {body, file} = req;
+          const {user} = req.session;
 
           const dataForm = {
             categories: Array.isArray(body[`category`]) ? body[`category`] : [body[`category`]],
@@ -159,7 +182,7 @@ router.post(`/add`,
             fullText: body[`full-text`],
             picture: file ? file.filename : null,
             createdDate: body[`date`],
-            userId: 1
+            userId: user.id
           };
 
           try {
@@ -177,16 +200,24 @@ router.post(`/add`,
                   categories,
                   dateNowISO: dataForm.createdDate,
                   validationMessages,
-                  validateMessagesWithFields
+                  validateMessagesWithFields,
+                  user,
+                  csrfToken: req.csrfToken()
                 });
           }
         }
     ));
 
 router.post(`/edit/:id`,
+    author,
     upload.single(`picture`),
+    csrfProtection,
     asyncHandler(
-        async ({body, file, params}, res) => {
+        async (req, res) => {
+
+          const {body, file, params} = req;
+          const {user} = req.session;
+
           const {id} = params;
 
           const currentPictureName = body[`pictureName`];
@@ -199,7 +230,7 @@ router.post(`/edit/:id`,
             fullText: body[`full-text`],
             picture: file ? file.filename : currentPictureName,
             createdDate: body[`date`],
-            userId: 1
+            userId: user.id
           };
 
           try {
@@ -220,18 +251,22 @@ router.post(`/edit/:id`,
               dateNowISO: dataForm.createdDate,
               categories,
               validationMessages,
-              validateMessagesWithFields
+              validateMessagesWithFields,
+              user,
+              csrfToken: req.csrfToken()
             });
           }
         }
     ));
 
-router.post(`/:id`, asyncHandler(
-    async ({body, params: {id}}, res) => {
+router.post(`/:id`, auth, csrfProtection, asyncHandler(
+    async (req, res) => {
+      const {body, params: {id}} = req;
+      const {user} = req.session;
 
       const newComment = {
         fullText: body.fullText,
-        userId: 2
+        userId: user.id
       };
 
       try {
@@ -245,7 +280,9 @@ router.post(`/:id`, asyncHandler(
         res.render(`article`, {
           article,
           validationMessages,
-          fullText: newComment.fullText
+          fullText: newComment.fullText,
+          user,
+          csrfToken: req.csrfToken()
         });
       }
     }

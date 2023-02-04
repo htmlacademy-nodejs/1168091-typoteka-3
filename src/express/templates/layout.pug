@@ -47,11 +47,11 @@ body
           a.pagination__button.button.button--forward(class= (page >= totalPages) ? 'button--disabled' : '' href=`${prefix}page=${page + 1}` aria-label='Страница вперед') Вперед
 
   mixin insertSingleFieldError(errors, fieldName)
-    -
-      const error = errors.find((el) => el.fieldName === fieldName)
-
-    if error
-      p.single-server-error= error.error
+    if errors && fieldName
+      -
+        const error = errors.find((el) => el.fieldName === fieldName)
+      if error
+        p.single-server-error= error.error
 
   mixin insertErrorMessage(messages)
     if messages
